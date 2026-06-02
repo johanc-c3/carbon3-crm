@@ -1,0 +1,23 @@
+{
+  "name": "carbon3-crm",
+  "version": "1.0.0",
+  "description": "Carbon3 Global CRM System Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/adapter-better-sqlite3": "latest",
+    "@prisma/client": "^7.8.0",
+    "better-sqlite3": "latest",
+    "express": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "latest",
+    "prisma": "^7.8.0"
+  }
+}
