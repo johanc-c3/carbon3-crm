@@ -11,6 +11,7 @@ const adapter = new PrismaBetterSqlite3({ url: 'file:./prisma/dev.db' });
 const prisma = new PrismaClient({ adapter });
 
 app.use(express.json());
+app.use(express.static('public'));
 
 // ==========================================
 // 2. REGION ENDPOINTS 
