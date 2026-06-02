@@ -1,5 +1,6 @@
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+// FIX: Point this back to the standard node_modules location
+const { PrismaClient } = require('@prisma/client'); 
 const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
 
 const app = express();
@@ -7,7 +8,7 @@ const app = express();
 // ==========================================
 // 1. PRISMA 7 DRIVER ADAPTER INITIALIZATION
 // ==========================================
-const adapter = new PrismaBetterSqlite3({ url: 'file:./prisma/dev.db' });
+const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
 const prisma = new PrismaClient({ adapter });
 
 app.use(express.json());
