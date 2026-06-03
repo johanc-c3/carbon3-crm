@@ -66,32 +66,33 @@ function checkAccess(requiredRoles) {
         next();
     };
 }
-
 // ==========================================
-// 2. NETWORK TREE HIERARCHY MAP
+// 2. HIERARCHICAL SYSTEM DASHBOARD
 // ==========================================
 app.get('/network', async (req, res) => {
     try {
         const network = await prisma.region.findMany({
             include: {
                 distributors: {
-                    where: { parentDistributorId: null },
                     include: { 
-                        subDistributors: { include: { agents: true, customers: true } }, 
-                        agents: { include: { subAgents: true } },
+                        subDistributors: true, 
+                        agents: true,
                         customers: true 
                     }
                 },
                 agents: {
-                    where: { parentAgentId: null, distributors: { none: {} } }, 
-                    include: { subAgents: true, distributors: true, customers: true }
+                    include: { 
+                        subAgents: true, 
+                        distributors: true,
+                        customers: true 
+                    }
                 },
-                customers: { where: { distributorId: null, agentId: null } }
+                customers: true
             }
         });
         res.json(network);
     } catch (error) {
-        res.status(500).json({ error: "Hierarchy extraction error.", details: error.message });
+        res.status(500).json({ error: "Hierarchy build failed.", details: error.message });
     }
 });
 
