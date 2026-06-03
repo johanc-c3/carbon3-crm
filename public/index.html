@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carbon3 Global - Master Operations Console</title>
+    <!-- Tailwind CSS v4 Engine CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 min-h-screen pb-12">
 
+    <!-- GATEWAY PORTAL LOGIN SCREEN -->
     <div id="loginGate" class="fixed inset-0 bg-slate-900/95 z-50 flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm space-y-4">
             <div class="text-center">
@@ -26,11 +28,14 @@
         </div>
     </div>
 
+    <!-- MAIN CORPORATE APPLICATION CONSOLE -->
     <div id="appCore" class="hidden space-y-6">
         
+        <!-- Master Operations Header Bar -->
         <header class="bg-slate-900 text-white p-5 shadow-md sticky top-0 z-40">
             <div class="container mx-auto flex justify-between items-center max-w-5xl">
                 
+                <!-- Brand and Corporate Asset Loading Section -->
                 <div class="flex items-center gap-4">
                     <img src="/logo.png" alt="Carbon3 Global Logo" class="h-10 w-auto object-contain rounded" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('fallback-icon').classList.remove('hidden');">
                     
@@ -44,6 +49,7 @@
                     </div>
                 </div>
 
+                <!-- Global Command Actions -->
                 <div class="flex items-center gap-2">
                     <button onclick="renderTree()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow-sm transition cursor-pointer">
                         🔄 Sync Matrix
@@ -55,10 +61,12 @@
             </div>
         </header>
 
+        <!-- Functional Operation Modals and Charts -->
         <main class="container mx-auto px-6 space-y-6 max-w-5xl">
             
             <div id="privilegedControlsBlock" class="grid grid-cols-1 gap-6 hidden">
                 
+                <!-- MODULE 1: COMPREHENSIVE ONBOARDING REGISTRY (ADD NEW ASSETS) -->
                 <details class="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs group" open>
                     <summary class="font-bold text-xs text-slate-500 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
                         <span>🏢 1. Pipeline Provisioning Registry (Create / Onboard Records)</span>
@@ -68,6 +76,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100">
                         
+                        <!-- Create Territory -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Add Territory</span>
                             <form id="regionForm" class="space-y-2">
@@ -76,6 +85,7 @@
                             </form>
                         </div>
 
+                        <!-- Add Distributor -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Distributor Track</span>
                             <form id="distributorForm" class="space-y-2">
@@ -86,6 +96,7 @@
                             </form>
                         </div>
 
+                        <!-- Add Agent -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-emerald-600 uppercase tracking-wide mb-2">Agent Allocation</span>
                             <form id="agentForm" class="space-y-2">
@@ -97,6 +108,7 @@
                             </form>
                         </div>
 
+                        <!-- Onboard Client -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-purple-600 uppercase tracking-wide mb-2">Client Activation</span>
                             <form id="customerForm" class="space-y-2">
@@ -110,6 +122,7 @@
                     </div>
                 </details>
 
+                <!-- MODULE 2: PIPELINE REASSIGNMENT HUB (TRANSFER / ROUTE EXISTING CHAINS) -->
                 <details id="reassignmentStation" class="bg-amber-50/60 border border-amber-200 rounded-xl p-5 shadow-3xs group hidden">
                     <summary class="font-bold text-xs text-amber-900 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
                         <span>🔄 2. Global Pipeline Reassignment Hub (Move / Shift Structures)</span>
@@ -137,6 +150,7 @@
                             </div>
                         </div>
 
+                        <!-- Sub-conditional tracking field hooks applied via event script logic -->
                         <div id="conditionalFields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
 
                         <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs py-2.5 px-5 rounded-lg uppercase tracking-wide transition shadow-sm cursor-pointer">
@@ -146,6 +160,7 @@
                 </details>
             </div>
 
+            <!-- MODULE 3: THE COMPREHENSIVE SUB-TIER HIERARCHICAL ORGANOGRAM GRAPH -->
             <section class="bg-white rounded-xl shadow-xs border border-slate-200 p-6">
                 <div class="mb-4">
                     <h2 class="text-base font-bold text-slate-900">Carbon3 Hierarchy Mapping Chart</h2>
@@ -164,7 +179,6 @@
         const API = '';
         let session = null;
 
-        // Force launch checking parameter loops for branding assets layout properties
         window.addEventListener('DOMContentLoaded', () => {
             const logoEl = document.querySelector('header img');
             if(logoEl && (!logoEl.src || logoEl.src.endsWith('/logo.png') === false)){
@@ -172,7 +186,6 @@
             }
         });
 
-        // Seed fallback entry parameters for database tracking accounts on initialization
         async function provisionSeedUser() {
             const res = await fetch('/auth/register', { 
                 method: 'POST', 
@@ -183,7 +196,6 @@
             else alert('Fallback operation aborted. Accounts table contains active structural rows.');
         }
 
-        // Login Handler Gate Interception
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -209,13 +221,11 @@
             document.getElementById('appCore').classList.remove('hidden');
             document.getElementById('userContext').textContent = ` Clearance Level: ${session.name} [${session.role}]`;
             
-            // Adjust visualization components and forms blocks using role definitions
             if (session.role === 'ADMIN' || session.role === 'MANAGER') {
                 document.getElementById('privilegedControlsBlock').classList.remove('hidden');
                 document.getElementById('reassignmentStation').classList.remove('hidden');
                 
                 if (session.role === 'MANAGER') {
-                    // Hide region setup block and limit pipeline transfers to customer rows
                     document.getElementById('regionForm').parentElement.classList.add('hidden');
                     document.getElementById('transferType').innerHTML = `<option value="customer">Customer Profile (Shift Functional Pipeline Position)</option>`;
                 }
@@ -226,9 +236,6 @@
 
         function signOut() { location.reload(); }
 
-        // ==========================================
-        // DYNAMIC TRANSFER PANEL LAYOUT LISTENERS
-        // ==========================================
         const typeSelector = document.getElementById('transferType');
         const condFields = document.getElementById('conditionalFields');
 
@@ -269,9 +276,6 @@
             } else { condFields.innerHTML = ''; }
         });
 
-        // ==========================================
-        // PROVISIONING RECORD CREATION MODULES
-        // ==========================================
         setupOnboardingForm('regionForm', '/regions', () => ({ name: document.getElementById('regName').value }), ['regName']);
         setupOnboardingForm('distributorForm', '/distributors', () => ({
             name: document.getElementById('distName').value,
@@ -309,9 +313,6 @@
             });
         }
 
-        // ==========================================
-        // PIPELINE REASSIGNMENT MUTATION MUTATOR
-        // ==========================================
         document.getElementById('transferForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const type = typeSelector.value;
@@ -351,7 +352,7 @@
         });
 
         // ==========================================
-        // DUAL COMPONENT GRAPH INTERFACE MAKER
+        // 4. MULTI-TIER TREE RENDERING GRAPH ENGINE
         // ==========================================
         async function renderTree() {
             const container = document.getElementById('tree-container');
@@ -360,29 +361,33 @@
                 const data = await res.json();
                 
                 if (data.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-400 italic bg-white p-4 rounded border">No territories setup. Populate structures using the registry fields panel above.</p>`;
+                    container.innerHTML = `<p class="text-xs text-slate-400 italic bg-white p-4 rounded border border-slate-200">No territories setup. Populate structures using the registry fields panel above.</p>`;
                     return;
                 }
 
                 container.innerHTML = data.map(region => {
-                    const directCustomers = region.customers || [];
-                    const independentAgents = region.agents || [];
-                    const masterDistributors = region.distributors || [];
+                    // Strict segregation exclusion rules separate unassigned regional "house" components from tier loops
+                    const directCustomers = (region.customers || []).filter(c => !c.distributorId && !c.agentId);
+                    const independentAgents = (region.agents || []).filter(a => !a.parentAgentId && (!a.distributors || a.distributors.length === 0));
+                    const masterDistributors = (region.distributors || []).filter(d => !d.parentDistributorId);
 
                     return `
+                        <!-- REGION TIER NODES (Tier 1) -->
                         <details class="bg-white border border-slate-200 rounded-xl shadow-2xs group" open>
                             <summary class="font-bold cursor-pointer text-slate-800 p-4 bg-slate-100/80 rounded-t-xl hover:bg-slate-100 flex justify-between items-center select-none text-xs">
-                                <span class="flex items-center gap-2">🌍 Territory: ${region.name.toUpperCase()} <span class="text-[10px] text-slate-400 font-mono font-normal">(Region ID: ${region.id})</span></span>
+                                <span>🌍 Territory: ${region.name.toUpperCase()} <span class="text-[10px] text-slate-400">(Region ID: ${region.id})</span></span>
                                 <span class="text-[10px] font-normal text-blue-600 group-open:hidden">Expand Node ⬇️</span>
                                 <span class="text-[10px] font-normal text-slate-400 hidden group-open:block">Collapse Node ⬆️</span>
                             </summary>
                             
                             <div class="p-4 border-t border-slate-100 space-y-4">
                                 
+                                <!-- Standalone/Independent Regional Asset Matrix (Tier 2/3) -->
                                 ${(directCustomers.length > 0 || independentAgents.length > 0) ? `
                                 <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col gap-2.5 text-xs font-medium text-slate-600 shadow-3xs">
                                     <span class="font-bold text-slate-400 uppercase text-[9px] tracking-wider">Independent Region Infrastructure Layer:</span>
                                     
+                                    <!-- Independent Corporate Agents -->
                                     ${independentAgents.map(a => `
                                         <div class="pl-2 py-1.5 border-l-2 border-emerald-500 bg-white p-2.5 rounded-lg shadow-3xs">
                                             <div class="text-emerald-600 font-bold">💼 Corporate Agent: ${a.name} <span class="text-[10px] text-slate-400 font-normal font-mono">(Agent ID: ${a.id})</span></div>
@@ -391,6 +396,7 @@
                                         </div>
                                     `).join('')}
                                     
+                                    <!-- Standalone Corporate House Customers -->
                                     ${directCustomers.map(c => `
                                         <div class="pl-2 py-1.5 border-l-2 border-purple-500 bg-white p-2.5 rounded-lg shadow-3xs flex justify-between items-center">
                                             <span class="text-purple-600 font-bold">👥 Corporate House Client: ${c.name}</span> <span class="text-[10px] font-mono text-slate-400">(Customer ID: ${c.id})</span>
@@ -398,15 +404,17 @@
                                     `).join('')}
                                 </div>` : ''}
 
+                                <!-- GLOBAL CHANNELS MATRIX REGION (Tier 2) -->
                                 <div class="ml-4 border-l-2 border-slate-200 pl-4 space-y-3">
                                     <h3 class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Downstream Distribution Channels</h3>
                                     
                                     ${masterDistributors.map(d => {
                                         const distCustomers = d.customers || [];
                                         const distAgents = d.agents || [];
-                                        const subDistributors = d.subDistributors || [];
+                                        const subDistributors = (region.distributors || []).filter(sd => sd.parentDistributorId === d.id);
 
                                         return `
+                                            <!-- MASTER DISTRIBUTOR ACCORDION BLOCK -->
                                             <details class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-3xs" open>
                                                 <summary class="text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 cursor-pointer hover:bg-slate-100 select-none flex justify-between items-center">
                                                     <span>📦 Master Dist: ${d.name} <span class="text-[10px] font-mono text-slate-400 font-normal">(Distributor ID: ${d.id})</span></span>
@@ -414,6 +422,7 @@
                                                 
                                                 <div class="p-3 border-t bg-white pl-6 space-y-3">
                                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
+                                                        <!-- Field Agents Matrix -->
                                                         <div class="bg-emerald-50/40 border border-emerald-100 p-2.5 rounded-md space-y-1">
                                                             <span class="block font-bold text-emerald-700 text-[9px] uppercase tracking-wide mb-1">💼 Authorized Channel Agents</span>
                                                             ${distAgents.map(a => `
@@ -424,6 +433,7 @@
                                                             `).join('') || '<div class="text-slate-400 italic">No localized channel agents assigned</div>'}
                                                         </div>
 
+                                                        <!-- Target Clients Pipeline -->
                                                         <div class="bg-purple-50/40 border border-purple-100 p-2.5 rounded-md space-y-1">
                                                             <span class="block font-bold text-purple-700 text-[9px] uppercase tracking-wide mb-1">👥 Localized Channel Accounts</span>
                                                             ${distCustomers.map(c => `
@@ -432,6 +442,7 @@
                                                         </div>
                                                     </div>
 
+                                                    <!-- SUB-DISTRIBUTOR LOOPS EXCLUSIONS (Tier 3) -->
                                                     ${subDistributors.length > 0 ? `
                                                     <div class="pt-2 border-t border-dashed border-slate-200">
                                                         <span class="block text-[9px] uppercase font-bold text-blue-500 tracking-wider mb-1">↳ Connected Sub-Distributors</span>
