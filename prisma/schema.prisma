@@ -6,36 +6,42 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// 1. Regions (Includes specific regions and a "Global" option)
 model Region {
   id           Int           @id @default(autoincrement())
-  name         String        @unique // e.g., "North America", "Europe", "Global"
+  name         String        @unique
   distributors Distributor[]
   agents       Agent[]
   customers    Customer[]
 }
 
-// 2. Distributors
 model Distributor {
-  id        Int        @id @default(autoincrement())
-  name      String
-  regionId  Int
-  region    Region     @relation(fields: [regionId], references: [id])
-  agents    Agent[]    @relation("AgentToDistributor") // Many-to-Many matrix
-  customers Customer[]
+  id                  Int           @id @default(autoincrement())
+  name                String
+  regionId            Int
+  region              Region        @relation(fields: [regionId], references: [id])
+  agents              Agent[]       @relation("AgentToDistributor")
+  customers           Customer[]
+
+  // Self-referential loop for Sub-Distributors
+  parentDistributorId Int?
+  parentDistributor   Distributor?  @relation("DistributorToSubDistributor", fields: [parentDistributorId], references: [id])
+  subDistributors     Distributor[] @relation("DistributorToSubDistributor")
 }
 
-// 3. Agents
 model Agent {
-  id           Int           @id @default(autoincrement())
-  name         String
-  regionId     Int
-  region       Region        @relation(fields: [regionId], references: [id])
-  distributors Distributor[] @relation("AgentToDistributor") // Many-to-Many matrix
-  customers    Customer[]
+  id            Int           @id @default(autoincrement())
+  name          String
+  regionId      Int
+  region        Region        @relation(fields: [regionId], references: [id])
+  distributors  Distributor[] @relation("AgentToDistributor")
+  customers     Customer[]
+
+  // Self-referential loop for Sub-Agents
+  parentAgentId Int?
+  parentAgent   Agent?        @relation("AgentToSubAgent", fields: [parentAgentId], references: [id])
+  subAgents     Agent[]       @relation("AgentToSubAgent")
 }
 
-// 4. Customers
 model Customer {
   id            Int          @id @default(autoincrement())
   name          String
@@ -45,4 +51,11 @@ model Customer {
   distributor   Distributor? @relation(fields: [distributorId], references: [id])
   agentId       Int?
   agent         Agent?       @relation(fields: [agentId], references: [id])
+}
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+  role     String // Enforced values: "ADMIN", "MANAGER", or "STAFF"
 }
