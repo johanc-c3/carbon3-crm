@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carbon3 Global - Master Operations Console</title>
-    <!-- Tailwind CSS v4 Engine CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 min-h-screen pb-12">
 
-    <!-- GATEWAY PORTAL LOGIN SCREEN -->
     <div id="loginGate" class="fixed inset-0 bg-slate-900/95 z-50 flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm space-y-4">
             <div class="text-center">
@@ -28,14 +26,11 @@
         </div>
     </div>
 
-    <!-- MAIN CORPORATE APPLICATION CONSOLE -->
     <div id="appCore" class="hidden space-y-6">
         
-        <!-- Master Operations Header Bar -->
         <header class="bg-slate-900 text-white p-5 shadow-md sticky top-0 z-40">
             <div class="container mx-auto flex justify-between items-center max-w-5xl">
                 
-                <!-- Brand and Corporate Asset Loading Section -->
                 <div class="flex items-center gap-4">
                     <img src="/logo.png" alt="Carbon3 Global Logo" class="h-10 w-auto object-contain rounded" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('fallback-icon').classList.remove('hidden');">
                     
@@ -49,7 +44,6 @@
                     </div>
                 </div>
 
-                <!-- Global Command Actions -->
                 <div class="flex items-center gap-2">
                     <button onclick="renderTree()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow-sm transition cursor-pointer">
                         🔄 Sync Matrix
@@ -61,12 +55,10 @@
             </div>
         </header>
 
-        <!-- Functional Operation Modals and Charts -->
         <main class="container mx-auto px-6 space-y-6 max-w-5xl">
             
             <div id="privilegedControlsBlock" class="grid grid-cols-1 gap-6 hidden">
                 
-                <!-- MODULE 1: COMPREHENSIVE ONBOARDING REGISTRY (ADD NEW ASSETS) -->
                 <details class="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs group" open>
                     <summary class="font-bold text-xs text-slate-500 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
                         <span>🏢 1. Pipeline Provisioning Registry (Create / Onboard Records)</span>
@@ -76,7 +68,6 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100">
                         
-                        <!-- Create Territory -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Add Territory</span>
                             <form id="regionForm" class="space-y-2">
@@ -85,7 +76,6 @@
                             </form>
                         </div>
 
-                        <!-- Add Distributor -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Distributor Track</span>
                             <form id="distributorForm" class="space-y-2">
@@ -96,7 +86,6 @@
                             </form>
                         </div>
 
-                        <!-- Add Agent -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-emerald-600 uppercase tracking-wide mb-2">Agent Allocation</span>
                             <form id="agentForm" class="space-y-2">
@@ -108,7 +97,6 @@
                             </form>
                         </div>
 
-                        <!-- Onboard Client -->
                         <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
                             <span class="block text-xs font-bold text-purple-600 uppercase tracking-wide mb-2">Client Activation</span>
                             <form id="customerForm" class="space-y-2">
@@ -122,45 +110,61 @@
                     </div>
                 </details>
 
-                <!-- MODULE 2: PIPELINE REASSIGNMENT HUB (TRANSFER / ROUTE EXISTING CHAINS) -->
-                <details id="reassignmentStation" class="bg-amber-50/60 border border-amber-200 rounded-xl p-5 shadow-3xs group hidden">
-                    <summary class="font-bold text-xs text-amber-900 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
-                        <span>🔄 2. Global Pipeline Reassignment Hub (Move / Shift Structures)</span>
-                        <span class="text-xs text-amber-600 group-open:hidden font-medium">Open Station ⬇️</span>
-                        <span class="text-xs text-slate-400 hidden group-open:block font-medium">Hide Station ⬆️</span>
-                    </summary>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    <form id="transferForm" class="space-y-4 mt-4 pt-4 border-t border-amber-200">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <details id="reassignmentStation" class="lg:col-span-2 bg-amber-50/60 border border-amber-200 rounded-xl p-5 shadow-3xs group hidden" open>
+                        <summary class="font-bold text-xs text-amber-900 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
+                            <span>🔄 2. Pipeline Reassignment Hub</span>
+                        </summary>
+                        <form id="transferForm" class="space-y-4 mt-4 pt-4 border-t border-amber-200">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">1. Blueprint</label>
+                                    <select id="transferType" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required>
+                                        <option value="customer">Customer Profile</option>
+                                        <option value="agent">Agent Frame</option>
+                                        <option value="distributor">Distributor Record</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">2. Target ID</label>
+                                    <input type="number" id="transferTargetId" placeholder="e.g., 4" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">3. Move To Region ID</label>
+                                    <input type="number" id="transferRegId" placeholder="e.g., 1" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required>
+                                </div>
+                            </div>
+                            <div id="conditionalFields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                            <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs py-2.5 px-5 rounded-lg uppercase tracking-wide transition shadow-sm cursor-pointer">Execute Transfer</button>
+                        </form>
+                    </details>
+
+                    <div id="userProvisioningStation" class="bg-blue-50/60 border border-blue-200 rounded-xl p-5 shadow-3xs hidden">
+                        <span class="block text-xs font-bold text-blue-900 uppercase tracking-widest mb-1">🔐 3. Staff Access Provisioning</span>
+                        <p class="text-[10px] text-blue-700 mb-3">Onboard corporate profiles and govern system access parameters.</p>
+                        
+                        <form id="userProvisionForm" class="space-y-2">
+                            <input type="text" id="newUserName" placeholder="Employee Full Name" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
+                            <input type="email" id="newUserEmail" placeholder="Corporate Email Address" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
+                            <input type="password" id="newUserPassword" placeholder="Temporary Password" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
+                            
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">1. Focus Model Blueprint</label>
-                                <select id="transferType" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium" required>
-                                    <option value="customer">Customer Profile (Shift Functional Pipeline Position)</option>
-                                    <option value="agent">Agent Frame (Shift Territory / Sub-Nest / Matrix Link)</option>
-                                    <option value="distributor">Distributor Record (Shift Region / Sub-Nest Path)</option>
+                                <label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Assigned Authority Role</label>
+                                <select id="newUserRole" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
+                                    <option value="STAFF">STAFF (Read-Only Directory access)</option>
+                                    <option value="MANAGER">MANAGER (Onboarding Registry operations)</option>
+                                    <option value="ADMIN">ADMIN (Full systemic infrastructure command)</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">2. Target Structural ID</label>
-                                <input type="number" id="transferTargetId" placeholder="e.g., 4" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium" required>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">3. Move To Destination Region ID</label>
-                                <input type="number" id="transferRegId" placeholder="e.g., 1" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium" required>
-                            </div>
-                        </div>
 
-                        <!-- Sub-conditional tracking field hooks applied via event script logic -->
-                        <div id="conditionalFields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                            <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold text-[10px] py-2 rounded-lg uppercase tracking-wider transition mt-2 cursor-pointer">Activate Account</button>
+                        </form>
+                    </div>
 
-                        <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs py-2.5 px-5 rounded-lg uppercase tracking-wide transition shadow-sm cursor-pointer">
-                            Execute Transfer Assignment
-                        </button>
-                    </form>
-                </details>
+                </div>
             </div>
 
-            <!-- MODULE 3: THE COMPREHENSIVE SUB-TIER HIERARCHICAL ORGANOGRAM GRAPH -->
             <section class="bg-white rounded-xl shadow-xs border border-slate-200 p-6">
                 <div class="mb-4">
                     <h2 class="text-base font-bold text-slate-900">Carbon3 Hierarchy Mapping Chart</h2>
@@ -225,9 +229,13 @@
                 document.getElementById('privilegedControlsBlock').classList.remove('hidden');
                 document.getElementById('reassignmentStation').classList.remove('hidden');
                 
+                if (session.role === 'ADMIN') {
+                    // Reveal user onboarding form exclusively to admins
+                    document.getElementById('userProvisioningStation').classList.remove('hidden');
+                }
                 if (session.role === 'MANAGER') {
                     document.getElementById('regionForm').parentElement.classList.add('hidden');
-                    document.getElementById('transferType').innerHTML = `<option value="customer">Customer Profile (Shift Functional Pipeline Position)</option>`;
+                    document.getElementById('transferType').innerHTML = `<option value="customer">Customer Profile</option>`;
                 }
             }
             typeSelector.dispatchEvent(new Event('change'));
@@ -245,55 +253,42 @@
                 condFields.innerHTML = `
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">New Parent Distributor ID (Optional)</label>
-                        <input type="number" id="parentDistId" placeholder="Leave blank to drop sub-nesting tags" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium">
+                        <input type="number" id="parentDistId" placeholder="Leave blank to drop sub-nesting tags" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
                     </div>`;
             } else if (val === 'agent') {
                 condFields.innerHTML = `
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">New Parent Agent ID (Optional)</label>
-                        <input type="number" id="parentAgentId" placeholder="Leave blank to assign as Independent Senior Agent" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium">
+                        <input type="number" id="parentAgentId" placeholder="Leave blank to assign as Independent Senior Agent" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Disconnect Distributor ID</label>
-                            <input type="number" id="disconnectDistId" placeholder="Dist ID" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium">
+                            <input type="number" id="disconnectDistId" placeholder="Dist ID" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Connect Distributor ID</label>
-                            <input type="number" id="connectDistId" placeholder="Dist ID" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium">
+                            <input type="number" id="connectDistId" placeholder="Dist ID" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
                         </div>
                     </div>`;
             } else if (val === 'customer') {
                 condFields.innerHTML = `
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Link Distributor ID (Optional)</label>
-                        <input type="number" id="customerDistId" placeholder="Leave blank to assign directly to region" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium">
+                        <input type="number" id="customerDistId" placeholder="Leave blank to assign directly to region" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Link Agent ID (Optional)</label>
-                        <input type="number" id="customerAgentId" placeholder="Leave blank to clear agent routing connections" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg focus:outline-amber-500 font-medium">
+                        <input type="number" id="customerAgentId" placeholder="Leave blank to clear agent routing connections" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
                     </div>`;
             } else { condFields.innerHTML = ''; }
         });
 
+        // Add regular form creation handlers
         setupOnboardingForm('regionForm', '/regions', () => ({ name: document.getElementById('regName').value }), ['regName']);
-        setupOnboardingForm('distributorForm', '/distributors', () => ({
-            name: document.getElementById('distName').value,
-            regionId: document.getElementById('distRegId').value,
-            parentDistributorId: document.getElementById('parentDistId').value || null
-        }), ['distName', 'distRegId', 'parentDistId']);
-        setupOnboardingForm('agentForm', '/agents', () => ({
-            name: document.getElementById('agentName').value,
-            regionId: document.getElementById('agentRegId').value,
-            distributorId: document.getElementById('agentDistId').value || null,
-            parentAgentId: document.getElementById('parentAgentId').value || null
-        }), ['agentName', 'agentRegId', 'agentDistId', 'parentAgentId']);
-        setupOnboardingForm('customerForm', '/customers', () => ({
-            name: document.getElementById('custName').value,
-            regionId: document.getElementById('custRegId').value,
-            distributorId: document.getElementById('custDistId').value || null,
-            agentId: document.getElementById('custAgentId').value || null
-        }), ['custName', 'custRegId', 'custDistId', 'custAgentId']);
+        setupOnboardingForm('distributorForm', '/distributors', () => ({ name: document.getElementById('distName').value, regionId: document.getElementById('distRegId').value, parentDistributorId: document.getElementById('parentDistId').value || null }), ['distName', 'distRegId', 'parentDistId']);
+        setupOnboardingForm('agentForm', '/agents', () => ({ name: document.getElementById('agentName').value, regionId: document.getElementById('agentRegId').value, distributorId: document.getElementById('agentDistId').value || null, parentAgentId: document.getElementById('parentAgentId').value || null }), ['agentName', 'agentRegId', 'agentDistId', 'parentAgentId']);
+        setupOnboardingForm('customerForm', '/customers', () => ({ name: document.getElementById('custName').value, regionId: document.getElementById('custRegId').value, distributorId: document.getElementById('custDistId').value || null, agentId: document.getElementById('custAgentId').value || null }), ['custName', 'custRegId', 'custDistId', 'custAgentId']);
 
         function setupOnboardingForm(id, endpoint, dataFn, clearFields) {
             document.getElementById(id).addEventListener('submit', async (e) => {
@@ -313,161 +308,9 @@
             });
         }
 
-        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+        // FIXED: Dedicated Intercept submission for User Provisioning
+        document.getElementById('userProvisionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const type = typeSelector.value;
-            const targetId = document.getElementById('transferTargetId').value;
-            const regionId = document.getElementById('transferRegId').value;
-
-            let endpointUrl = `/customers/${targetId}/move`;
-            let payload = { regionId: regionId };
-
-            if (type === 'distributor') {
-                endpointUrl = `/distributors/${targetId}/move`;
-                payload.parentDistributorId = document.getElementById('parentDistId').value || null;
-            } else if (type === 'agent') {
-                endpointUrl = `/agents/${targetId}/move`;
-                payload.parentAgentId = document.getElementById('parentAgentId').value || null;
-                payload.connectDistId = document.getElementById('connectDistId').value || null;
-                payload.disconnectDistId = document.getElementById('disconnectDistId').value || null;
-            } else if (type === 'customer') {
-                payload.distributorId = document.getElementById('customerDistId').value || null;
-                payload.agentId = document.getElementById('customerAgentId').value || null;
-            }
-
-            try {
-                const res = await fetch(endpointUrl, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'x-user-role': session.role },
-                    body: JSON.stringify(payload)
-                });
-                if (!res.ok) throw new Error();
-                alert('Account pipeline shifted successfully!');
-                document.getElementById('transferForm').reset();
-                typeSelector.dispatchEvent(new Event('change'));
-                renderTree();
-            } catch {
-                alert('Transfer Rejected. Validate authorization rights and check targets exist inside database.');
-            }
-        });
-
-        // ==========================================
-        // 4. MULTI-TIER TREE RENDERING GRAPH ENGINE
-        // ==========================================
-        async function renderTree() {
-            const container = document.getElementById('tree-container');
-            try {
-                const res = await fetch('/network');
-                const data = await res.json();
-                
-                if (data.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-400 italic bg-white p-4 rounded border border-slate-200">No territories setup. Populate structures using the registry fields panel above.</p>`;
-                    return;
-                }
-
-                container.innerHTML = data.map(region => {
-                    // Strict segregation exclusion rules separate unassigned regional "house" components from tier loops
-                    const directCustomers = (region.customers || []).filter(c => !c.distributorId && !c.agentId);
-                    const independentAgents = (region.agents || []).filter(a => !a.parentAgentId && (!a.distributors || a.distributors.length === 0));
-                    const masterDistributors = (region.distributors || []).filter(d => !d.parentDistributorId);
-
-                    return `
-                        <!-- REGION TIER NODES (Tier 1) -->
-                        <details class="bg-white border border-slate-200 rounded-xl shadow-2xs group" open>
-                            <summary class="font-bold cursor-pointer text-slate-800 p-4 bg-slate-100/80 rounded-t-xl hover:bg-slate-100 flex justify-between items-center select-none text-xs">
-                                <span>🌍 Territory: ${region.name.toUpperCase()} <span class="text-[10px] text-slate-400">(Region ID: ${region.id})</span></span>
-                                <span class="text-[10px] font-normal text-blue-600 group-open:hidden">Expand Node ⬇️</span>
-                                <span class="text-[10px] font-normal text-slate-400 hidden group-open:block">Collapse Node ⬆️</span>
-                            </summary>
-                            
-                            <div class="p-4 border-t border-slate-100 space-y-4">
-                                
-                                <!-- Standalone/Independent Regional Asset Matrix (Tier 2/3) -->
-                                ${(directCustomers.length > 0 || independentAgents.length > 0) ? `
-                                <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col gap-2.5 text-xs font-medium text-slate-600 shadow-3xs">
-                                    <span class="font-bold text-slate-400 uppercase text-[9px] tracking-wider">Independent Region Infrastructure Layer:</span>
-                                    
-                                    <!-- Independent Corporate Agents -->
-                                    ${independentAgents.map(a => `
-                                        <div class="pl-2 py-1.5 border-l-2 border-emerald-500 bg-white p-2.5 rounded-lg shadow-3xs">
-                                            <div class="text-emerald-600 font-bold">💼 Corporate Agent: ${a.name} <span class="text-[10px] text-slate-400 font-normal font-mono">(Agent ID: ${a.id})</span></div>
-                                            ${a.customers?.length > 0 ? `<div class="pl-4 text-purple-600 font-semibold mt-0.5">👥 Direct Accounts: ${a.customers.map(c => c.name).join(', ')}</div>` : ''}
-                                            ${a.subAgents?.length > 0 ? a.subAgents.map(sa => `<div class="pl-4 text-slate-500 font-normal text-[11px] mt-0.5">↳ Sub-Agent Reporter: ${sa.name} <span class="text-[9px] font-mono">(ID: ${sa.id})</span></div>`).join('') : ''}
-                                        </div>
-                                    `).join('')}
-                                    
-                                    <!-- Standalone Corporate House Customers -->
-                                    ${directCustomers.map(c => `
-                                        <div class="pl-2 py-1.5 border-l-2 border-purple-500 bg-white p-2.5 rounded-lg shadow-3xs flex justify-between items-center">
-                                            <span class="text-purple-600 font-bold">👥 Corporate House Client: ${c.name}</span> <span class="text-[10px] font-mono text-slate-400">(Customer ID: ${c.id})</span>
-                                        </div>
-                                    `).join('')}
-                                </div>` : ''}
-
-                                <!-- GLOBAL CHANNELS MATRIX REGION (Tier 2) -->
-                                <div class="ml-4 border-l-2 border-slate-200 pl-4 space-y-3">
-                                    <h3 class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Downstream Distribution Channels</h3>
-                                    
-                                    ${masterDistributors.map(d => {
-                                        const distCustomers = d.customers || [];
-                                        const distAgents = d.agents || [];
-                                        const subDistributors = (region.distributors || []).filter(sd => sd.parentDistributorId === d.id);
-
-                                        return `
-                                            <!-- MASTER DISTRIBUTOR ACCORDION BLOCK -->
-                                            <details class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-3xs" open>
-                                                <summary class="text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 cursor-pointer hover:bg-slate-100 select-none flex justify-between items-center">
-                                                    <span>📦 Master Dist: ${d.name} <span class="text-[10px] font-mono text-slate-400 font-normal">(Distributor ID: ${d.id})</span></span>
-                                                </summary>
-                                                
-                                                <div class="p-3 border-t bg-white pl-6 space-y-3">
-                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
-                                                        <!-- Field Agents Matrix -->
-                                                        <div class="bg-emerald-50/40 border border-emerald-100 p-2.5 rounded-md space-y-1">
-                                                            <span class="block font-bold text-emerald-700 text-[9px] uppercase tracking-wide mb-1">💼 Authorized Channel Agents</span>
-                                                            ${distAgents.map(a => `
-                                                                <div class="font-medium py-0.5 text-slate-700">
-                                                                    • ${a.name} <span class="text-[10px] text-slate-400 font-mono">(Agent ID: ${a.id})</span>
-                                                                    ${a.subAgents?.length > 0 ? a.subAgents.map(sa => `<div class="pl-4 text-slate-500 font-normal text-[10px]">↳ Sub-Agent: ${sa.name} <span class="text-[9px] font-mono">(ID: ${sa.id})</span></div>`).join('') : ''}
-                                                                </div>
-                                                            `).join('') || '<div class="text-slate-400 italic">No localized channel agents assigned</div>'}
-                                                        </div>
-
-                                                        <!-- Target Clients Pipeline -->
-                                                        <div class="bg-purple-50/40 border border-purple-100 p-2.5 rounded-md space-y-1">
-                                                            <span class="block font-bold text-purple-700 text-[9px] uppercase tracking-wide mb-1">👥 Localized Channel Accounts</span>
-                                                            ${distCustomers.map(c => `
-                                                                <div class="font-medium py-0.5 text-slate-700">• ${c.name} <span class="text-[10px] text-slate-400 font-mono">(Customer ID: ${c.id})</span></div>
-                                                            `).join('') || '<div class="text-slate-400 italic">No distribution profiles tied to track</div>'}
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- SUB-DISTRIBUTOR LOOPS EXCLUSIONS (Tier 3) -->
-                                                    ${subDistributors.length > 0 ? `
-                                                    <div class="pt-2 border-t border-dashed border-slate-200">
-                                                        <span class="block text-[9px] uppercase font-bold text-blue-500 tracking-wider mb-1">↳ Connected Sub-Distributors</span>
-                                                        <div class="space-y-1 pl-2">
-                                                            ${subDistributors.map(sd => `
-                                                                <div class="bg-blue-50/50 text-slate-700 text-xs p-2 rounded border border-blue-100/60 font-medium space-y-1">
-                                                                    <div>📦 Sub-Distributor: ${sd.name} <span class="text-[10px] font-mono text-slate-400">(Sub-Dist ID: ${sd.id})</span></div>
-                                                                    ${sd.customers?.length > 0 ? `<div class="pl-4 text-purple-600 text-[10px]">👥 Assigned Pipeline: ${sd.customers.map(sc => sc.name).join(', ')}</div>` : ''}
-                                                                </div>
-                                                            `).join('')}
-                                                        </div>
-                                                    </div>` : ''}
-                                                </div>
-                                            </details>
-                                        `;
-                                    }).join('') || '<p class="text-[11px] text-slate-400 italic pl-2">No regional distribution infrastructure configured.</p>'}
-                                </div>
-                            </div>
-                        </details>
-                    `;
-                }).join('');
-            } catch (error) {
-                container.innerHTML = `<p class="text-red-500 text-xs font-semibold bg-red-50 border p-4 rounded-lg">Handshake Interrupted: Connections dropped from local operational tracking loops.</p>`;
-            }
-        }
-    </script>
-</body>
-</html>
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const password = document.getElementById('newUserPassword').value;
