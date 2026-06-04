@@ -21,221 +21,128 @@
             </form>
             <div class="border-t border-slate-100 pt-3 text-center">
                 <p class="text-[10px] text-slate-400">First time logging in? Run the fallback registration tool:</p>
-                <button onclick="provisionSeedUser()" class="text-blue-500 font-bold hover:underline text-[10px] mt-1 cursor-pointer">Auto-Register Default ADMIN Profile</button>
+                <button type="button" onclick="window.provisionSeedUser()" class="text-blue-500 font-bold hover:underline text-[10px] mt-1 cursor-pointer">Auto-Register Default ADMIN Profile</button>
             </div>
         </div>
     </div>
 
     <div id="appCore" class="hidden space-y-6">
-        
         <header class="bg-slate-900 text-white p-5 shadow-md sticky top-0 z-40">
             <div class="container mx-auto flex justify-between items-center max-w-5xl">
-                
                 <div class="flex items-center gap-4">
-                    <img src="/logo.png" alt="Carbon3 Global Logo" class="h-10 w-auto object-contain rounded" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('fallback-icon').classList.remove('hidden');">
-                    
-                    <div id="fallback-icon" class="hidden h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-xl tracking-tighter text-white shadow-sm">
-                        C3
-                    </div>
-
+                    <div class="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-xl tracking-tighter text-white shadow-sm">C3</div>
                     <div>
                         <h1 class="text-xl font-bold tracking-tight leading-tight">Carbon3 Global</h1>
                         <p id="userContext" class="text-xs text-slate-400 font-medium"></p>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-2">
-                    <button onclick="renderTree()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow-sm transition cursor-pointer">
-                        🔄 Sync Matrix
-                    </button>
-                    <button onclick="signOut()" class="bg-slate-800 border border-slate-700 hover:bg-red-700 hover:border-red-700 text-slate-300 hover:text-white text-xs px-3.5 py-2 rounded-lg transition cursor-pointer">
-                        Sign Out
-                    </button>
+                    <button type="button" onclick="renderTree()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow-sm transition cursor-pointer">🔄 Sync Matrix</button>
+                    <button type="button" onclick="signOut()" class="bg-slate-800 border border-slate-700 hover:bg-red-700 hover:border-red-700 text-slate-300 hover:text-white text-xs px-3.5 py-2 rounded-lg transition cursor-pointer">Sign Out</button>
                 </div>
             </div>
         </header>
 
         <main class="container mx-auto px-6 space-y-6 max-w-5xl">
-            
             <div id="privilegedControlsBlock" class="grid grid-cols-1 gap-6 hidden">
-                
                 <details class="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs group" open>
                     <summary class="font-bold text-xs text-slate-500 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
-                        <span>🏢 1. Pipeline Provisioning Registry (Create / Onboard Records)</span>
+                        <span>🏢 1. Pipeline Provisioning Registry</span>
                         <span class="text-xs text-blue-600 group-open:hidden font-medium">Open Input Panels ⬇️</span>
                         <span class="text-xs text-slate-400 hidden group-open:block font-medium">Hide Input Panels ⬆️</span>
                     </summary>
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100">
-                        
-                        <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
-                            <span class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Add Territory</span>
-                            <form id="regionForm" class="space-y-2">
-                                <input type="text" id="regName" placeholder="Region Name (e.g., EMEA)" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs py-1.5 rounded font-semibold uppercase tracking-wider transition cursor-pointer">Save Region</button>
-                            </form>
-                        </div>
-
-                        <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
-                            <span class="block text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Distributor Track</span>
-                            <form id="distributorForm" class="space-y-2">
-                                <input type="text" id="distName" placeholder="Distributor Title" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                                <input type="number" id="distRegId" placeholder="Target Region ID" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                                <input type="number" id="parentDistId" placeholder="Parent Dist ID (Optional)" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium">
-                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs py-1.5 rounded font-bold uppercase tracking-wider transition cursor-pointer">Save Dist</button>
-                            </form>
-                        </div>
-
-                        <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
-                            <span class="block text-xs font-bold text-emerald-600 uppercase tracking-wide mb-2">Agent Allocation</span>
-                            <form id="agentForm" class="space-y-2">
-                                <input type="text" id="agentName" placeholder="Agent Full Name" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-emerald-500 font-medium" required>
-                                <input type="number" id="agentRegId" placeholder="Target Region ID" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-emerald-500 font-medium" required>
-                                <input type="number" id="agentDistId" placeholder="Distributor ID (Optional)" class="w-full text-xs bg-white border p-2 rounded focus:outline-emerald-500 font-medium">
-                                <input type="number" id="parentAgentId" placeholder="Parent Agent ID (Optional)" class="w-full text-xs bg-white border p-2 rounded focus:outline-emerald-500 font-medium">
-                                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-1.5 rounded font-bold uppercase tracking-wider transition cursor-pointer">Save Agent</button>
-                            </form>
-                        </div>
-
-                        <div class="bg-slate-50/60 p-3.5 rounded-xl border border-slate-200/60">
-                            <span class="block text-xs font-bold text-purple-600 uppercase tracking-wide mb-2">Client Activation</span>
-                            <form id="customerForm" class="space-y-2">
-                                <input type="text" id="custName" placeholder="Client Company Title" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-purple-500 font-medium" required>
-                                <input type="number" id="custRegId" placeholder="Target Region ID" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-purple-500 font-medium" required>
-                                <input type="number" id="custDistId" placeholder="Distributor ID (Optional)" class="w-full text-xs bg-white border p-2 rounded focus:outline-purple-500 font-medium">
-                                <input type="number" id="custAgentId" placeholder="Agent ID (Optional)" class="w-full text-xs bg-white border p-2 rounded focus:outline-purple-500 font-medium">
-                                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs py-1.5 rounded font-bold uppercase tracking-wider transition cursor-pointer">Onboard Cust</button>
-                            </form>
-                        </div>
+                        <div class="bg-slate-50/60 p-3.5 rounded-xl border"><span class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Add Territory</span><form id="regionForm" class="space-y-2"><input type="text" id="regName" placeholder="EMEA" class="w-full text-xs bg-white border p-2 rounded font-medium" required><button type="submit" class="w-full bg-slate-800 text-white text-xs py-1.5 rounded font-semibold uppercase tracking-wider cursor-pointer">Save Region</button></form></div>
+                        <div class="bg-slate-50/60 p-3.5 rounded-xl border"><span class="block text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Distributor Track</span><form id="distributorForm" class="space-y-2"><input type="text" id="distName" placeholder="Name" class="w-full text-xs bg-white border p-2 rounded font-medium" required><input type="number" id="distRegId" placeholder="Region ID" class="w-full text-xs bg-white border p-2 rounded font-medium" required><input type="number" id="parentDistId" placeholder="Parent ID" class="w-full text-xs bg-white border p-2 rounded font-medium"><button type="submit" class="w-full bg-blue-600 text-white text-xs py-1.5 rounded font-bold uppercase tracking-wider cursor-pointer">Save Dist</button></form></div>
+                        <div class="bg-slate-50/60 p-3.5 rounded-xl border"><span class="block text-xs font-bold text-emerald-600 uppercase tracking-wide mb-2">Agent Allocation</span><form id="agentForm" class="space-y-2"><input type="text" id="agentName" placeholder="Full Name" class="w-full text-xs bg-white border p-2 rounded font-medium" required><input type="number" id="agentRegId" placeholder="Region ID" class="w-full text-xs bg-white border p-2 rounded font-medium" required><input type="number" id="agentDistId" placeholder="Dist ID" class="w-full text-xs bg-white border p-2 rounded font-medium"><input type="number" id="parentAgentId" placeholder="Parent ID" class="w-full text-xs bg-white border p-2 rounded font-medium"><button type="submit" class="w-full bg-emerald-600 text-white text-xs py-1.5 rounded font-bold uppercase tracking-wider cursor-pointer">Save Agent</button></form></div>
+                        <div class="bg-slate-50/60 p-3.5 rounded-xl border"><span class="block text-xs font-bold text-purple-600 uppercase tracking-wide mb-2">Client Activation</span><form id="customerForm" class="space-y-2"><input type="text" id="custName" placeholder="Company Name" class="w-full text-xs bg-white border p-2 rounded font-medium" required><input type="number" id="custRegId" placeholder="Region ID" class="w-full text-xs bg-white border p-2 rounded font-medium" required><input type="number" id="custDistId" placeholder="Dist ID" class="w-full text-xs bg-white border p-2 rounded font-medium"><input type="number" id="custAgentId" placeholder="Agent ID" class="w-full text-xs bg-white border p-2 rounded font-medium"><button type="submit" class="w-full bg-purple-600 text-white text-xs py-1.5 rounded font-bold uppercase tracking-wider cursor-pointer">Onboard Cust</button></form></div>
                     </div>
                 </details>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
                     <details id="reassignmentStation" class="lg:col-span-2 bg-amber-50/60 border border-amber-200 rounded-xl p-5 shadow-3xs group hidden" open>
-                        <summary class="font-bold text-xs text-amber-900 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
-                            <span>🔄 2. Pipeline Reassignment Hub</span>
-                        </summary>
+                        <summary class="font-bold text-xs text-amber-900 uppercase tracking-widest cursor-pointer list-none select-none"><span>🔄 2. Pipeline Reassignment Hub</span></summary>
                         <form id="transferForm" class="space-y-4 mt-4 pt-4 border-t border-amber-200">
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div>
-                                    <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">1. Blueprint</label>
-                                    <select id="transferType" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required>
-                                        <option value="customer">Customer Profile</option>
-                                        <option value="agent">Agent Frame</option>
-                                        <option value="distributor">Distributor Record</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">2. Target ID</label>
-                                    <input type="number" id="transferTargetId" placeholder="e.g., 4" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">3. Move To Region ID</label>
-                                    <input type="number" id="transferRegId" placeholder="e.g., 1" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required>
-                                </div>
+                                <div><label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">1. Blueprint</label><select id="transferType" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium" required><option value="customer">Customer Profile</option><option value="agent">Agent Frame</option><option value="distributor">Distributor Record</option></select></div>
+                                <div><label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">2. Target ID</label><input type="number" id="transferTargetId" placeholder="4" class="w-full text-xs bg-white border p-2.5 rounded-lg font-medium" required></div>
+                                <div><label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">3. Destination Region ID</label><input type="number" id="transferRegId" placeholder="1" class="w-full text-xs bg-white border p-2.5 rounded-lg font-medium" required></div>
                             </div>
                             <div id="conditionalFields" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-                            <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs py-2.5 px-5 rounded-lg uppercase tracking-wide transition shadow-sm cursor-pointer">Execute Transfer</button>
+                            <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs py-2.5 px-5 rounded-lg uppercase tracking-wide cursor-pointer shadow-sm">Execute Transfer</button>
                         </form>
                     </details>
 
                     <div id="userProvisioningStation" class="bg-blue-50/60 border border-blue-200 rounded-xl p-5 shadow-3xs hidden">
                         <span class="block text-xs font-bold text-blue-900 uppercase tracking-widest mb-1">🔐 3. Staff Access Provisioning</span>
-                        <p class="text-[10px] text-blue-700 mb-3">Onboard corporate profiles and govern system access parameters.</p>
-                        
+                        <p class="text-[10px] text-blue-700 mb-3">Onboard profiles and govern access rules.</p>
                         <form id="userProvisionForm" class="space-y-2">
-                            <input type="text" id="newUserName" placeholder="Employee Full Name" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                            <input type="email" id="newUserEmail" placeholder="Corporate Email Address" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                            <input type="password" id="newUserPassword" placeholder="Temporary Password" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                            
-                            <div>
-                                <label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Assigned Authority Role</label>
-                                <select id="newUserRole" class="w-full text-xs bg-white border border-slate-200 p-2 rounded focus:outline-blue-500 font-medium" required>
-                                    <option value="STAFF">STAFF (Read-Only Directory access)</option>
-                                    <option value="MANAGER">MANAGER (Onboarding Registry operations)</option>
-                                    <option value="ADMIN">ADMIN (Full systemic infrastructure command)</option>
-                                </select>
-                            </div>
-
-                            <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold text-[10px] py-2 rounded-lg uppercase tracking-wider transition mt-2 cursor-pointer">Activate Account</button>
+                            <input type="text" id="newUserName" placeholder="Employee Name" class="w-full text-xs bg-white border p-2 rounded font-medium" required>
+                            <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full text-xs bg-white border p-2 rounded font-medium" required>
+                            <input type="password" id="newUserPassword" placeholder="Password" class="w-full text-xs bg-white border p-2 rounded font-medium" required>
+                            <div><label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Assigned Role</label><select id="newUserRole" class="w-full text-xs bg-white border p-2 rounded font-medium" required><option value="STAFF">STAFF (Read-Only)</option><option value="MANAGER">MANAGER (Onboarding operations)</option><option value="ADMIN">ADMIN (Full systemic access)</option></select></div>
+                            <button type="submit" class="w-full bg-blue-700 text-white font-bold text-[10px] py-2 rounded-lg uppercase tracking-wider cursor-pointer">Activate Account</button>
                         </form>
                     </div>
-
                 </div>
             </div>
 
-            <section class="bg-white rounded-xl shadow-xs border border-slate-200 p-6">
-                <div class="mb-4">
-                    <h2 class="text-base font-bold text-slate-900">Carbon3 Hierarchy Mapping Chart</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Interactive drill-down structural architecture displaying active corporate reporting lanes.</p>
-                </div>
-                
-                <div id="tree-container" class="space-y-4">
-                    <p class="text-xs text-slate-400 italic">Validating authentication lanes...</p>
-                </div>
+            <section class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+                <h2 class="text-base font-bold text-slate-900 mb-1">Carbon3 Hierarchy Mapping Chart</h2>
+                <p class="text-xs text-slate-500 mb-4">Interactive operational maps representing live database states.</p>
+                <div id="tree-container" class="space-y-4"><p class="text-xs text-slate-400 italic">Validating authentication lanes...</p></div>
             </section>
-
         </main>
     </div>
 
     <script>
+        console.log("🚀 Carbon3 Frontend Engine Initialized Successfully");
+
         const API = '';
         let session = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const logoEl = document.querySelector('header img');
-            if(logoEl && (!logoEl.src || logoEl.src.endsWith('/logo.png') === false)){
-                logoEl.onerror();
+        window.provisionSeedUser = async function() {
+            try {
+                const res = await fetch('/auth/register', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ email: 'admin@carbon3.com', name: 'Master Admin', password: 'password123', role: 'ADMIN' }) 
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Primary Administrator Created Successfully!\nLog In With:\nEmail: admin@carbon3.com\nPassword: password123');
+                } else {
+                    alert('Registration Status: ' + (data.error || 'Check status details.'));
+                }
+            } catch (err) {
+                alert('Connection Error: Verify backend setup migration commands are complete.');
             }
-        });
-
-        async function provisionSeedUser() {
-            const res = await fetch('/auth/register', { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ email: 'admin@carbon3.com', name: 'Master Admin', password: 'password123', role: 'ADMIN' }) 
-            });
-            if(res.ok) alert('Primary Administrator Created Successfully!\nLog In With:\nEmail: admin@carbon3.com\nPassword: password123');
-            else alert('Fallback operation aborted. Accounts table contains active structural rows.');
-        }
+        };
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            try {
-                const res = await fetch('/auth/login', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ email, password }) 
-                });
-                if (res.ok) {
-                    session = await res.json();
-                    initiateSecureApplicationSession();
-                } else { throw new Error(); }
-            } catch { 
-                alert('Authentication Denied. Check signature verification credentials.'); 
-            }
+            const res = await fetch('/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+            if (res.ok) {
+                session = await res.json();
+                initiateSecureApplicationSession();
+            } else { alert('Authentication Denied. Check credential variables.'); }
         });
 
         function initiateSecureApplicationSession() {
             document.getElementById('loginGate').classList.add('hidden');
             document.getElementById('appCore').classList.remove('hidden');
-            document.getElementById('userContext').textContent = ` Clearance Level: ${session.name} [${session.role}]`;
+            document.getElementById('userContext').textContent = " Clearance: " + session.name + " [" + session.role + "]";
             
             if (session.role === 'ADMIN' || session.role === 'MANAGER') {
                 document.getElementById('privilegedControlsBlock').classList.remove('hidden');
                 document.getElementById('reassignmentStation').classList.remove('hidden');
-                
-                if (session.role === 'ADMIN') {
-                    // Reveal user onboarding form exclusively to admins
-                    document.getElementById('userProvisioningStation').classList.remove('hidden');
-                }
+                if (session.role === 'ADMIN') document.getElementById('userProvisioningStation').classList.remove('hidden');
                 if (session.role === 'MANAGER') {
                     document.getElementById('regionForm').parentElement.classList.add('hidden');
-                    document.getElementById('transferType').innerHTML = `<option value="customer">Customer Profile</option>`;
+                    document.getElementById('transferType').innerHTML = '<option value="customer">Customer Profile</option>';
                 }
             }
             typeSelector.dispatchEvent(new Event('change'));
@@ -250,41 +157,14 @@
         typeSelector.addEventListener('change', () => {
             const val = typeSelector.value;
             if (val === 'distributor') {
-                condFields.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">New Parent Distributor ID (Optional)</label>
-                        <input type="number" id="parentDistId" placeholder="Leave blank to drop sub-nesting tags" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
-                    </div>`;
+                condFields.innerHTML = "<div><label class='block text-[10px] uppercase font-bold text-amber-800 mb-1'>New Parent Distributor ID (Optional)</label><input type='number' id='parentDistId' placeholder='Opt ID' class='w-full text-xs bg-white border p-2.5 rounded-lg'></div>";
             } else if (val === 'agent') {
-                condFields.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">New Parent Agent ID (Optional)</label>
-                        <input type="number" id="parentAgentId" placeholder="Leave blank to assign as Independent Senior Agent" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Disconnect Distributor ID</label>
-                            <input type="number" id="disconnectDistId" placeholder="Dist ID" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Connect Distributor ID</label>
-                            <input type="number" id="connectDistId" placeholder="Dist ID" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
-                        </div>
-                    </div>`;
+                condFields.innerHTML = "<div><label class='block text-[10px] uppercase font-bold text-amber-800 mb-1'>New Parent Agent ID (Optional)</label><input type='number' id='parentAgentId' placeholder='Opt ID' class='w-full text-xs bg-white border p-2.5 rounded-lg'></div><div class='grid grid-cols-2 gap-2'><div><label class='block text-[10px] uppercase font-bold text-amber-800 mb-1'>Disconnect Dist</label><input type='number' id='disconnectDistId' class='w-full text-xs bg-white border p-2.5 rounded-lg'></div><div><label class='block text-[10px] uppercase font-bold text-amber-800 mb-1'>Connect Dist</label><input type='number' id='connectDistId' class='w-full text-xs bg-white border p-2.5 rounded-lg'></div></div>";
             } else if (val === 'customer') {
-                condFields.innerHTML = `
-                    <div>
-                        <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Link Distributor ID (Optional)</label>
-                        <input type="number" id="customerDistId" placeholder="Leave blank to assign directly to region" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-bold text-amber-800 mb-1">Link Agent ID (Optional)</label>
-                        <input type="number" id="customerAgentId" placeholder="Leave blank to clear agent routing connections" class="w-full text-xs bg-white border border-slate-200 p-2.5 rounded-lg font-medium">
-                    </div>`;
+                condFields.innerHTML = "<div><label class='block text-[10px] uppercase font-bold text-amber-800 mb-1'>Link Distributor ID (Optional)</label><input type='number' id='customerDistId' class='w-full text-xs bg-white border p-2.5 rounded-lg'></div><div><label class='block text-[10px] uppercase font-bold text-amber-800 mb-1'>Link Agent ID (Optional)</label><input type='number' id='customerAgentId' class='w-full text-xs bg-white border p-2.5 rounded-lg'></div>";
             } else { condFields.innerHTML = ''; }
         });
 
-        // Add regular form creation handlers
         setupOnboardingForm('regionForm', '/regions', () => ({ name: document.getElementById('regName').value }), ['regName']);
         setupOnboardingForm('distributorForm', '/distributors', () => ({ name: document.getElementById('distName').value, regionId: document.getElementById('distRegId').value, parentDistributorId: document.getElementById('parentDistId').value || null }), ['distName', 'distRegId', 'parentDistId']);
         setupOnboardingForm('agentForm', '/agents', () => ({ name: document.getElementById('agentName').value, regionId: document.getElementById('agentRegId').value, distributorId: document.getElementById('agentDistId').value || null, parentAgentId: document.getElementById('parentAgentId').value || null }), ['agentName', 'agentRegId', 'agentDistId', 'parentAgentId']);
@@ -293,24 +173,136 @@
         function setupOnboardingForm(id, endpoint, dataFn, clearFields) {
             document.getElementById(id).addEventListener('submit', async (e) => {
                 e.preventDefault();
-                try {
-                    const res = await fetch(API + endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'x-user-role': session.role },
-                        body: JSON.stringify(dataFn())
-                    });
-                    if (!res.ok) throw new Error();
-                    clearFields.forEach(fid => document.getElementById(fid).value = '');
-                    renderTree();
-                } catch {
-                    alert('Submission Rejected. Verify permission clearance and ensure parent mapping IDs exist.');
-                }
+                const res = await fetch(API + endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-user-role': session.role }, body: JSON.stringify(dataFn()) });
+                if(res.ok) { clearFields.forEach(fid => document.getElementById(fid).value = ''); renderTree(); }
+                else { alert('Submission Rejected. Check parent mappings references.'); }
             });
         }
 
-        // FIXED: Dedicated Intercept submission for User Provisioning
         document.getElementById('userProvisionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('newUserName').value;
-            const email = document.getElementById('newUserEmail').value;
-            const password = document.getElementById('newUserPassword').value;
+            const res = await fetch('/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: document.getElementById('newUserName').value, email: document.getElementById('newUserEmail').value, password: document.getElementById('newUserPassword').value, role: document.getElementById('newUserRole').value })
+            });
+            if (res.ok) { alert('Account Activated Successfully.'); document.getElementById('userProvisionForm').reset(); }
+            else { alert('Activation Failed. Email parameter matches active records.'); }
+        });
+
+        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const type = typeSelector.value;
+            const targetId = document.getElementById('transferTargetId').value;
+            let url = "/customers/" + targetId + "/move", payload = { regionId: document.getElementById('transferRegId').value };
+            if (type === 'distributor') { url = "/distributors/" + targetId + "/move"; payload.parentDistributorId = document.getElementById('parentDistId').value || null; }
+            else if (type === 'agent') { url = "/agents/" + targetId + "/move"; payload.parentAgentId = document.getElementById('parentAgentId').value || null; payload.connectDistId = document.getElementById('connectDistId').value || null; payload.disconnectDistId = document.getElementById('disconnectDistId').value || null; }
+            else if (type === 'customer') { payload.distributorId = document.getElementById('customerDistId').value || null; payload.agentId = document.getElementById('customerAgentId').value || null; }
+
+            const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'x-user-role': session.role }, body: JSON.stringify(payload) });
+            if (res.ok) { document.getElementById('transferForm').reset(); typeSelector.dispatchEvent(new Event('change')); renderTree(); }
+            else { alert('Transfer assignment query failed.'); }
+        });
+
+        // ==========================================
+        // UPGRADED COMPREHENSIVE AGENT CARD RENDERING
+        // ==========================================
+        function buildAgentHTML(a, region) {
+            // Find downstream junior agents reporting directly to this agent node
+            const subAgents = (region.agents || []).filter(sa => sa.parentAgentId === a.id);
+            const agentCustomers = a.customers || [];
+            const agentDistributors = a.distributors || [];
+
+            let html = "<div class='pl-2.5 py-2 border-l-2 border-emerald-500 bg-emerald-50/20 p-2.5 rounded-lg my-1 shadow-3xs text-[11px]'>";
+            html += "<div class='text-emerald-700 font-bold'>💼 Agent: " + a.name + " <span class='text-[9px] text-slate-400 font-normal font-mono'>(ID: " + a.id + ")</span></div>";
+            html += "<div class='pl-3 mt-1 space-y-0.5 text-[10px]'>";
+            
+            // Render Clients falling directly under this agent
+            if (agentCustomers.length > 0) {
+                html += "<div class='text-purple-700 font-medium'>👥 Clients: " + agentCustomers.map(c => c.name + " <span class='text-[8px] text-slate-400'>(ID: " + c.id + ")</span>").join(', ') + "</div>";
+            }
+            
+            // Render Distributors mapped to this agent
+            if (agentDistributors.length > 0) {
+                html += "<div class='text-blue-700 font-medium'>📦 Linked Dist: " + agentDistributors.map(d => d.name + " <span class='text-[8px] text-slate-400'>(ID: " + d.id + ")</span>").join(', ') + "</div>";
+            }
+
+            // Recursively evaluate any sub-agents down the chain
+            if (subAgents.length > 0) {
+                html += "<div class='mt-1.5 pt-1 border-t border-dashed border-emerald-200'>";
+                html += "<span class='block text-[8px] uppercase font-bold text-slate-400 tracking-wider mb-1'>↳ Sub-Agents Hierarchy:</span>";
+                html += subAgents.map(sa => {
+                    const fullSA = (region.agents || []).find(x => x.id === sa.id) || sa;
+                    return buildAgentHTML(fullSA, region);
+                }).join('');
+                html += "</div>";
+            }
+
+            html += "</div></div>";
+            return html;
+        }
+
+        function buildDistributorHTML(d, region) {
+            const subDistributors = (region.distributors || []).filter(sd => sd.parentDistributorId === d.id);
+            
+            // Map full objects to capture customers and distributors properties
+            const agentsHTML = (d.agents || []).map(a => {
+                const fullA = (region.agents || []).find(x => x.id === a.id) || a;
+                return buildAgentHTML(fullA, region);
+            }).join('') || "<div class='text-slate-400 italic text-[10px]'>No channel agents assigned</div>";
+            
+            const clientsHTML = (d.customers || []).map(c => "<div>• " + c.name + " <span class='text-[9px] text-slate-400'>(ID: " + c.id + ")</span></div>").join('') || "<div class='text-slate-400 italic text-[10px]'>No clients assigned</div>";
+            
+            let html = "<details class='bg-white border rounded-lg overflow-hidden shadow-3xs mb-1.5' open>";
+            html += "<summary class='text-xs font-semibold text-slate-700 bg-slate-50 p-2 cursor-pointer select-none'>📦 Master Dist: " + d.name + " <span class='text-[9px] text-slate-400 font-mono font-normal'>(ID: " + d.id + ")</span></summary>";
+            html += "<div class='p-2.5 space-y-2 bg-white text-[11px] pl-4'>";
+            html += "<div class='grid grid-cols-1 md:grid-cols-2 gap-2'>";
+            html += "<div class='bg-emerald-50/40 p-2 rounded border border-emerald-100'><span class='block font-bold text-emerald-700 text-[9px] uppercase mb-1'>💼 Mapped Agents</span>" + agentsHTML + "</div>";
+            html += "<div class='bg-purple-50/40 p-2 rounded border border-purple-100'><span class='block font-bold text-purple-700 text-[9px] uppercase mb-1'>👥 Portfolio Clients</span>" + clientsHTML + "</div>";
+            html += "</div>";
+            
+            if (subDistributors.length > 0) {
+                html += "<div class='pt-2 border-t border-dashed'><span class='block text-[9px] uppercase font-bold text-blue-500 mb-1'>↳ Connected Sub-Distributors</span>";
+                html += subDistributors.map(sd => "<div class='bg-blue-50/50 text-slate-700 p-1 rounded border border-blue-100/60 font-medium'>📦 Sub-Distributor: " + sd.name + " <span class='text-[9px] font-mono text-slate-400'>(ID: " + sd.id + ")</span></div>").join('');
+                html += "</div>";
+            }
+            html += "</div></details>";
+            return html;
+        }
+
+        async function renderTree() {
+            const container = document.getElementById('tree-container');
+            try {
+                const res = await fetch('/network');
+                const data = await res.json();
+                if (data.length === 0) { container.innerHTML = '<p class="text-xs text-slate-400 italic">No operational assets present.</p>'; return; }
+
+                container.innerHTML = data.map(region => {
+                    const directCustomers = (region.customers || []).filter(c => !c.distributorId && !c.agentId);
+                    const independentAgents = (region.agents || []).filter(a => !a.parentAgentId && (!a.distributors || a.distributors.length === 0));
+                    const masterDistributors = (region.distributors || []).filter(d => !d.parentDistributorId);
+
+                    let directBoxHTML = "";
+                    if (directCustomers.length > 0 || independentAgents.length > 0) {
+                        directBoxHTML += "<div class='bg-slate-50 border p-2.5 rounded-lg flex flex-col gap-2 text-xs shadow-3xs'><span class='font-bold text-slate-400 uppercase text-[9px]'>Independent Region Infrastructure Layer:</span>";
+                        directBoxHTML += independentAgents.map(a => buildAgentHTML(a, region)).join('');
+                        directBoxHTML += directCustomers.map(c => "<div class='bg-white p-2 rounded shadow-3xs text-purple-600 font-bold'>👥 House Account: " + c.name + " <span class='text-[9px] text-slate-400 font-normal'>(ID: " + c.id + ")</span></div>").join('');
+                        directBoxHTML += "</div>";
+                    }
+
+                    const channelsHTML = masterDistributors.map(d => buildDistributorHTML(d, region)).join('') || '<p class="text-[10px] text-slate-400 italic">No distribution tracks active.</p>';
+
+                    let regionHTML = "<details class='bg-white border rounded-xl overflow-hidden shadow-2xs mb-3' open>";
+                    regionHTML += "<summary class='font-bold cursor-pointer text-slate-800 p-4 bg-slate-100/80 rounded-t-xl hover:bg-slate-100 flex justify-between select-none text-xs'><span>🌍 Territory: " + region.name.toUpperCase() + " <span class='text-[10px] text-slate-400'>(Region ID: " + region.id + ")</span></span></summary>";
+                    regionHTML += "<div class='p-3 pl-6 space-y-3'>" + directBoxHTML;
+                    regionHTML += "<div class='border-l-2 pl-3 space-y-2'><h3 class='text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1'>Downstream Channels</h3>" + channelsHTML + "</div>";
+                    regionHTML += "</div></details>";
+                    return regionHTML;
+                }).join('');
+            } catch (err) { 
+                container.innerHTML = '<p class="text-red-500 text-xs">Handshake link parsing disconnect.</p>'; 
+            }
+        }
+    </script>
+</body>
+</html>
