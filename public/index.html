@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carbon3 Global - Master Operations Console</title>
+    <!-- Tailwind CSS v4 Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 min-h-screen pb-12">
 
+    <!-- GATEWAY PORTAL LOGIN SCREEN -->
     <div id="loginGate" class="fixed inset-0 bg-slate-900/95 z-50 flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm space-y-4">
             <div class="text-center">
@@ -15,8 +17,8 @@
                 <p class="text-xs text-slate-400 mt-0.5">Authenticate credentials to manage organizational records</p>
             </div>
             <form id="loginForm" class="space-y-3">
-                <input type="email" id="loginEmail" placeholder="Corporate Email Address" class="w-full text-xs border border-slate-200 p-2.5 rounded-lg focus:outline-blue-500 font-medium" required>
-                <input type="password" id="loginPassword" placeholder="Gateway Access Password" class="w-full text-xs border border-slate-200 p-2.5 rounded-lg focus:outline-blue-500 font-medium" required>
+                <input type="email" id="loginEmail" placeholder="Corporate Email Address" class="w-full text-xs border border-slate-200 p-2.5 rounded-lg font-medium" required>
+                <input type="password" id="loginPassword" placeholder="Gateway Access Password" class="w-full text-xs border border-slate-200 p-2.5 rounded-lg font-medium" required>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs py-2.5 rounded-lg font-bold uppercase tracking-wider transition cursor-pointer">Secure Sign-In</button>
             </form>
             <div class="border-t border-slate-100 pt-3 text-center">
@@ -26,6 +28,52 @@
         </div>
     </div>
 
+    <!-- DYNAMIC GLOBAL METADATA EDITING MODAL OVERLAY -->
+    <div id="editModalOverlay" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 id="modalTitle" class="text-sm font-bold text-slate-900 uppercase">Modify Structural Record</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 font-bold text-sm cursor-pointer">✕</button>
+            </div>
+            <form id="modalEditForm" class="space-y-3 text-xs">
+                <input type="hidden" id="editEntityClass">
+                <input type="hidden" id="editEntityTargetId">
+                
+                <div><label class="block font-semibold mb-1">Entity Profile Name</label><input type="text" id="editFieldName" class="w-full border p-2 rounded bg-slate-50 font-medium font-mono" required></div>
+                <div><label class="block font-semibold mb-1">Direct Contact Details</label><input type="text" id="editFieldContact" placeholder="Email, phone numbers..." class="w-full border p-2 rounded"></div>
+                <div><label class="block font-semibold mb-1">Internal Pipeline Operations Notes</label><textarea id="editFieldNotes" rows="2" placeholder="Strategic operational timeline metrics..." class="w-full border p-2 rounded"></textarea></div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="block font-semibold mb-1">Active Orders ($ Value)</label><input type="text" id="editFieldOrders" placeholder="e.g., $45,000" class="w-full border p-2 rounded"></div>
+                    <div><label class="block font-semibold mb-1">Estimated Pipeline Pipe</label><input type="text" id="editFieldEstOrders" placeholder="e.g., $120,000" class="w-full border p-2 rounded"></div>
+                </div>
+
+                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200/60 space-y-2">
+                    <span class="block font-bold text-[10px] uppercase text-slate-400">Testing & Proof-of-Concept Trackers</span>
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-1.5 font-medium"><input type="checkbox" id="editFieldTested"> Product Tested</label>
+                        <div class="flex-1">
+                            <label class="block font-semibold mb-0.5">POC Evaluation Status</label>
+                            <select id="editFieldPocStatus" class="w-full border bg-white p-1.5 rounded font-medium">
+                                <option value="NONE">NONE</option>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="SUCCESS">SUCCESS</option>
+                                <option value="FAILURE">FAILURE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div><label class="block font-semibold mb-1">POC Structural Results Logs</label><input type="text" id="editFieldPocResults" placeholder="Technical evaluation status data..." class="w-full border p-2 rounded"></div>
+                </div>
+
+                <div class="flex gap-2 pt-2 border-t">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white p-2 rounded font-bold uppercase tracking-wider cursor-pointer text-[10px]">Save Enriched Updates</button>
+                    <button type="button" onclick="closeEditModal()" class="bg-slate-100 border text-slate-600 p-2 rounded font-medium cursor-pointer text-[10px]">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP STRUCTURE CONSOLE -->
     <div id="appCore" class="hidden space-y-6">
         <header class="bg-slate-900 text-white p-5 shadow-md sticky top-0 z-40">
             <div class="container mx-auto flex justify-between items-center max-w-5xl">
@@ -44,7 +92,26 @@
         </header>
 
         <main class="container mx-auto px-6 space-y-6 max-w-5xl">
+            <!-- Automated Hierarchical Spreadsheet Operations Compiler -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">📥 Hierarchical Spreadsheet Audit Compiler</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Extract perfectly sorted data trees down to localized customers and channel vectors.</p>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <select id="pdfReportScope" class="bg-slate-50 border border-slate-200 text-xs p-2 rounded-lg font-medium text-slate-700 outline-none">
+                        <option value="all">Full Hierarchical Audit (Complete Deep-Sorted Tree)</option>
+                        <option value="regions">Territories & Regions Matrix Only</option>
+                        <option value="distributors">Distribution Networks Layer Only</option>
+                        <option value="agents">Allocated Account Agents Matrix Only</option>
+                        <option value="customers">Active Client Portfolio Records Only</option>
+                    </select>
+                    <button type="button" onclick="executeSpreadsheetExtraction()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-xs cursor-pointer transition whitespace-nowrap">Compile Report</button>
+                </div>
+            </div>
+
             <div id="privilegedControlsBlock" class="grid grid-cols-1 gap-6 hidden">
+                <!-- 1. PIPELINE CREATION REGISTRY -->
                 <details class="bg-white border border-slate-200 rounded-xl p-5 shadow-2xs group" open>
                     <summary class="font-bold text-xs text-slate-500 uppercase tracking-widest cursor-pointer list-none flex justify-between items-center select-none">
                         <span>🏢 1. Pipeline Provisioning Registry</span>
@@ -59,6 +126,7 @@
                     </div>
                 </details>
 
+                <!-- MODULE 2: REASSIGNMENT & PROVISIONING -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <details id="reassignmentStation" class="lg:col-span-2 bg-amber-50/60 border border-amber-200 rounded-xl p-5 shadow-3xs group hidden" open>
                         <summary class="font-bold text-xs text-amber-900 uppercase tracking-widest cursor-pointer list-none select-none"><span>🔄 2. Pipeline Reassignment Hub</span></summary>
@@ -74,23 +142,53 @@
                     </details>
 
                     <div id="userProvisioningStation" class="bg-blue-50/60 border border-blue-200 rounded-xl p-5 shadow-3xs hidden">
-                        <span class="block text-xs font-bold text-blue-900 uppercase tracking-widest mb-1">🔐 3. Staff Access Provisioning</span>
-                        <p class="text-[10px] text-blue-700 mb-3">Onboard profiles and govern access rules.</p>
-                        <form id="userProvisionForm" class="space-y-2">
-                            <input type="text" id="newUserName" placeholder="Employee Name" class="w-full text-xs bg-white border p-2 rounded font-medium" required>
-                            <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full text-xs bg-white border p-2 rounded font-medium" required>
-                            <input type="password" id="newUserPassword" placeholder="Password" class="w-full text-xs bg-white border p-2 rounded font-medium" required>
-                            <div><label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Assigned Role</label><select id="newUserRole" class="w-full text-xs bg-white border p-2 rounded font-medium" required><option value="STAFF">STAFF (Read-Only)</option><option value="MANAGER">MANAGER (Onboarding operations)</option><option value="ADMIN">ADMIN (Full systemic access)</option></select></div>
-                            <button type="submit" class="w-full bg-blue-700 text-white font-bold text-[10px] py-2 rounded-lg uppercase tracking-wider cursor-pointer">Activate Account</button>
+                        <span class="block text-xs font-bold text-blue-900 uppercase tracking-widest mb-1">🔐 3. Access Provisioning Hub</span>
+                        <p class="text-[10px] text-blue-700 mb-3">Onboard corporate profiles and lock parameter limits.</p>
+                        <form id="userProvisionForm" class="space-y-2 text-xs">
+                            <input type="text" id="newUserName" placeholder="Employee Name" class="w-full bg-white border p-2 rounded font-medium" required>
+                            <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full bg-white border p-2 rounded font-medium" required>
+                            <input type="password" id="newUserPassword" placeholder="Password" class="w-full bg-white border p-2 rounded font-medium" required>
+                            
+                            <div class="p-2 bg-white border rounded flex items-center gap-2 font-semibold text-slate-700 shadow-2xs">
+                                <input type="checkbox" id="newUserCanEdit" class="h-3.5 w-3.5 accent-blue-600" checked>
+                                <span>Authorize Writing Permissions (Can Edit / Delete)</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Database Visibility Scope</label>
+                                    <select id="newUserScopeType" class="w-full bg-white border p-2 rounded font-medium" onchange="toggleScopeIdInput()">
+                                        <option value="FULL">FULL (Entire Database)</option>
+                                        <option value="REGION">REGION (Single Territory)</option>
+                                        <option value="DISTRIBUTOR">DISTRIBUTOR Pipeline Only</option>
+                                        <option value="AGENT">AGENT Layer Only</option>
+                                    </select>
+                                </div>
+                                <div id="scopeIdWrapper" class="hidden">
+                                    <label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Scoping Target Object ID</label>
+                                    <input type="number" id="newUserScopeId" placeholder="e.g., 2" class="w-full bg-white border p-2 rounded font-medium">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[9px] uppercase font-bold text-blue-800 mb-0.5">Corporate Role Designation</label>
+                                <select id="newUserRole" class="w-full bg-white border p-2 rounded font-medium">
+                                    <option value="STAFF">STAFF (Scoped Operator Layer)</option>
+                                    <option value="ADMIN">ADMIN (Absolute System Master Overrides)</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-blue-700 text-white font-bold text-[10px] py-2 rounded-lg uppercase tracking-wider cursor-pointer mt-1 hover:bg-blue-800 transition shadow-xs">Activate Account</button>
                         </form>
                     </div>
                 </div>
             </div>
 
+            <!-- ORGANOGRAM MODULE MAIN TREE CONTAINER -->
             <section class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
                 <h2 class="text-base font-bold text-slate-900 mb-1">Carbon3 Hierarchy Mapping Chart</h2>
-                <p class="text-xs text-slate-500 mb-4">Interactive operational maps representing live database states.</p>
-                <div id="tree-container" class="space-y-4"><p class="text-xs text-slate-400 italic">Validating authentication lanes...</p></div>
+                <p class="text-xs text-slate-500 mb-4">Granular visualization displaying real-time tracking metrics and operations fields.</p>
+                <div id="tree-container" class="space-y-4"><p class="text-xs text-slate-400 italic">Validating session lanes...</p></div>
             </section>
         </main>
     </div>
@@ -100,23 +198,25 @@
 
         const API = '';
         let session = null;
+        let globalPool = { regions: [], distributors: [], agents: [], customers: [] };
+
+        function toggleScopeIdInput() {
+            const val = document.getElementById('newUserScopeType').value;
+            document.getElementById('scopeIdWrapper').classList.toggle('hidden', val === 'FULL');
+        }
 
         window.provisionSeedUser = async function() {
             try {
                 const res = await fetch('/auth/register', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ email: 'admin@carbon3.com', name: 'Master Admin', password: 'password123', role: 'ADMIN' }) 
+                    body: JSON.stringify({ email: 'admin@carbon3.com', name: 'Master Admin', password: 'password123', role: 'ADMIN', canEdit: true, scopeType: 'FULL' }) 
                 });
                 const data = await res.json();
                 if (res.ok) {
                     alert('Primary Administrator Created Successfully!\nLog In With:\nEmail: admin@carbon3.com\nPassword: password123');
-                } else {
-                    alert('Registration Status: ' + (data.error || 'Check status details.'));
-                }
-            } catch (err) {
-                alert('Connection Error: Verify backend setup migration commands are complete.');
-            }
+                } else { alert('Notice: ' + (data.error || 'Check status variables.')); }
+            } catch { alert('Migration verification connection error.'); }
         };
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -128,22 +228,24 @@
             if (res.ok) {
                 session = await res.json();
                 initiateSecureApplicationSession();
-            } else { alert('Authentication Denied. Check credential variables.'); }
+            } else { alert('Authentication Denied. Check credentials variables.'); }
         });
 
         function initiateSecureApplicationSession() {
             document.getElementById('loginGate').classList.add('hidden');
             document.getElementById('appCore').classList.remove('hidden');
-            document.getElementById('userContext').textContent = " Clearance: " + session.name + " [" + session.role + "]";
             
-            if (session.role === 'ADMIN' || session.role === 'MANAGER') {
-                document.getElementById('privilegedControlsBlock').classList.remove('hidden');
-                document.getElementById('reassignmentStation').classList.remove('hidden');
-                if (session.role === 'ADMIN') document.getElementById('userProvisioningStation').classList.remove('hidden');
-                if (session.role === 'MANAGER') {
-                    document.getElementById('regionForm').parentElement.classList.add('hidden');
-                    document.getElementById('transferType').innerHTML = '<option value="customer">Customer Profile</option>';
-                }
+            if (session.role === 'ADMIN') { session.canEdit = true; }
+
+            document.getElementById('userContext').textContent = " Session: " + session.name + " [" + session.role + "] Authorization: " + (session.role === 'ADMIN' ? "MASTER ADMIN (Full Access Override)" : (session.canEdit ? "READ & WRITE" : "READ-ONLY (Restricted)"));
+            
+            document.getElementById('privilegedControlsBlock').classList.remove('hidden');
+            document.getElementById('reassignmentStation').classList.remove('hidden');
+            document.getElementById('userProvisioningStation').classList.remove('hidden');
+            
+            if (!session.canEdit) {
+                document.getElementById('userProvisioningStation').classList.add('hidden');
+                document.getElementById('privilegedControlsBlock').classList.add('hidden');
             }
             typeSelector.dispatchEvent(new Event('change'));
             renderTree();
@@ -173,9 +275,9 @@
         function setupOnboardingForm(id, endpoint, dataFn, clearFields) {
             document.getElementById(id).addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const res = await fetch(API + endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-user-role': session.role }, body: JSON.stringify(dataFn()) });
+                const res = await fetch(API + endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-user-email': session.email }, body: JSON.stringify(dataFn()) });
                 if(res.ok) { clearFields.forEach(fid => document.getElementById(fid).value = ''); renderTree(); }
-                else { alert('Submission Rejected. Check parent mappings references.'); }
+                else { const d = await res.json(); alert(d.error || 'Submission Rejected. Check parent mappings.'); }
             });
         }
 
@@ -184,10 +286,18 @@
             const res = await fetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: document.getElementById('newUserName').value, email: document.getElementById('newUserEmail').value, password: document.getElementById('newUserPassword').value, role: document.getElementById('newUserRole').value })
+                body: JSON.stringify({ 
+                    name: document.getElementById('newUserName').value, 
+                    email: document.getElementById('newUserEmail').value, 
+                    password: document.getElementById('newUserPassword').value, 
+                    role: document.getElementById('newUserRole').value,
+                    canEdit: document.getElementById('newUserCanEdit').checked,
+                    scopeType: document.getElementById('newUserScopeType').value,
+                    scopeId: document.getElementById('newUserScopeId').value || null
+                })
             });
-            if (res.ok) { alert('Account Activated Successfully.'); document.getElementById('userProvisionForm').reset(); }
-            else { alert('Activation Failed. Email parameter matches active records.'); }
+            if (res.ok) { alert('Profile Access Rules Activated Successfully.'); document.getElementById('userProvisionForm').reset(); toggleScopeIdInput(); }
+            else { alert('Activation Failed. Checking duplication data parameters.'); }
         });
 
         document.getElementById('transferForm').addEventListener('submit', async (e) => {
@@ -199,71 +309,140 @@
             else if (type === 'agent') { url = "/agents/" + targetId + "/move"; payload.parentAgentId = document.getElementById('parentAgentId').value || null; payload.connectDistId = document.getElementById('connectDistId').value || null; payload.disconnectDistId = document.getElementById('disconnectDistId').value || null; }
             else if (type === 'customer') { payload.distributorId = document.getElementById('customerDistId').value || null; payload.agentId = document.getElementById('customerAgentId').value || null; }
 
-            const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'x-user-role': session.role }, body: JSON.stringify(payload) });
+            const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'x-user-email': session.email }, body: JSON.stringify(payload) });
             if (res.ok) { document.getElementById('transferForm').reset(); typeSelector.dispatchEvent(new Event('change')); renderTree(); }
             else { alert('Transfer assignment query failed.'); }
         });
 
-        // ==========================================
-        // UPGRADED COMPREHENSIVE AGENT CARD RENDERING
-        // ==========================================
+        function injectMetadataBadges(obj) {
+            let pocColor = "text-slate-400";
+            if (obj.pocStatus === "ACTIVE") pocColor = "text-purple-600 font-bold bg-purple-50 px-1 rounded border border-purple-200 animate-pulse";
+            if (obj.pocStatus === "SUCCESS") pocColor = "text-emerald-600 font-bold bg-emerald-50 px-1 rounded border border-emerald-200";
+            if (obj.pocStatus === "FAILURE") pocColor = "text-red-600 font-bold bg-red-50 px-1 rounded border border-red-200";
+
+            let html = "<div class='mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[10px] bg-slate-900/5 p-2 rounded-md font-medium text-slate-700 border border-slate-200/40'>";
+            html += "<div>📍 Contact: <span class='text-slate-900 font-bold'>" + (obj.contactDetails || 'None') + "</span></div>";
+            html += "<div>📈 Pipe: <span class='text-blue-600 font-bold'>" + (obj.orders || '0') + " / " + (obj.estimatedOrders || '0') + "</span></div>";
+            html += "<div>🧪 Test: <span class='" + (obj.productTested ? "text-emerald-600" : "text-amber-500") + " font-bold'>" + (obj.productTested ? "Complete" : "Pending") + "</span></div>";
+            html += "<div>⚡ POC: <span class='" + pocColor + "'>" + (obj.pocStatus || 'NONE') + "</span></div>";
+            if (obj.notes) html += "<div class='col-span-2 sm:col-span-4 border-t pt-1 mt-1 text-slate-500 italic font-normal'>🗒️ Notes: " + obj.notes + "</div>";
+            if (obj.pocResults) html += "<div class='col-span-2 sm:col-span-4 text-purple-600 font-semibold'>🔬 POC Log: " + obj.pocResults + "</div>";
+            html += "</div>";
+            return html;
+        }
+
+        function injectActionControls(type, obj) {
+            if (session.role === 'ADMIN' || session.canEdit) { 
+                return "<div class='flex gap-1.5 text-[9px] font-bold mt-1'>" +
+                       "<button type='button' onclick=\"openEditModal('" + type + "', " + obj.id + ")\" class='bg-blue-50 text-blue-600 px-2 py-0.5 rounded hover:bg-blue-100 cursor-pointer transition'>✏️ Edit Info</button>" +
+                       "<button type='button' onclick=\"executeDeletion('" + type + "', " + obj.id + ")\" class='bg-red-50 text-red-600 px-2 py-0.5 rounded hover:bg-red-100 cursor-pointer transition'>❌ Delete</button>" +
+                       "</div>";
+            }
+            return ""; 
+        }
+
+        function openEditModal(type, id) {
+            const arr = globalPool[type];
+            if (!arr) return;
+            const target = arr.find(x => x.id === id);
+            if (!target) return;
+
+            document.getElementById('editEntityClass').value = type;
+            document.getElementById('editEntityTargetId').value = id;
+            document.getElementById('modalTitle').textContent = "Modify " + type.slice(0, -1) + " (Record ID: " + id + ")";
+            
+            document.getElementById('editFieldName').value = target.name;
+            document.getElementById('editFieldContact').value = target.contactDetails || '';
+            document.getElementById('editFieldNotes').value = target.notes || '';
+            document.getElementById('editFieldOrders').value = target.orders || '';
+            document.getElementById('editFieldEstOrders').value = target.estimatedOrders || '';
+            document.getElementById('editFieldTested').checked = Boolean(target.productTested);
+            document.getElementById('editFieldPocStatus').value = target.pocStatus || 'NONE';
+            document.getElementById('editFieldPocResults').value = target.pocResults || '';
+
+            document.getElementById('editModalOverlay').classList.remove('hidden');
+        }
+
+        function closeEditModal() { document.getElementById('editModalOverlay').classList.add('hidden'); }
+
+        document.getElementById('modalEditForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const type = document.getElementById('editEntityClass').value;
+            const id = document.getElementById('editEntityTargetId').value;
+
+            const payload = {
+                name: document.getElementById('editFieldName').value,
+                contactDetails: document.getElementById('editFieldContact').value,
+                notes: document.getElementById('editFieldNotes').value,
+                orders: document.getElementById('editFieldOrders').value,
+                estimatedOrders: document.getElementById('editFieldEstOrders').value,
+                productTested: document.getElementById('editFieldTested').checked,
+                pocStatus: document.getElementById('editFieldPocStatus').value,
+                pocResults: document.getElementById('editFieldPocResults').value
+            };
+
+            const res = await fetch("/" + type + "/" + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'x-user-email': session.email },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) { closeEditModal(); renderTree(); } 
+            else { alert('Update tracking operation rejected by server permissions rule block.'); }
+        });
+
+        async function executeDeletion(type, id) {
+            if (!confirm("⚠️ Action Warning: Are you sure you want to completely destroy this profile record mapping node? This cascade will permanently sever attached downstream sub-nests.")) return;
+            const res = await fetch("/" + type + "/" + id, { method: 'DELETE', headers: { 'x-user-email': session.email } });
+            if (res.ok) { renderTree(); } 
+            else { alert('Deletion transaction blocked by data governance layer.'); }
+        }
+
         function buildAgentHTML(a, region) {
-            // Find downstream junior agents reporting directly to this agent node
-            const subAgents = (region.agents || []).filter(sa => sa.parentAgentId === a.id);
-            const agentCustomers = a.customers || [];
+            const subAgents = globalPool.agents.filter(sa => sa.parentAgentId === a.id);
+            const agentCustomers = globalPool.customers.filter(c => c.agentId === a.id);
             const agentDistributors = a.distributors || [];
 
-            let html = "<div class='pl-2.5 py-2 border-l-2 border-emerald-500 bg-emerald-50/20 p-2.5 rounded-lg my-1 shadow-3xs text-[11px]'>";
-            html += "<div class='text-emerald-700 font-bold'>💼 Agent: " + a.name + " <span class='text-[9px] text-slate-400 font-normal font-mono'>(ID: " + a.id + ")</span></div>";
-            html += "<div class='pl-3 mt-1 space-y-0.5 text-[10px]'>";
-            
-            // Render Clients falling directly under this agent
-            if (agentCustomers.length > 0) {
-                html += "<div class='text-purple-700 font-medium'>👥 Clients: " + agentCustomers.map(c => c.name + " <span class='text-[8px] text-slate-400'>(ID: " + c.id + ")</span>").join(', ') + "</div>";
-            }
-            
-            // Render Distributors mapped to this agent
-            if (agentDistributors.length > 0) {
-                html += "<div class='text-blue-700 font-medium'>📦 Linked Dist: " + agentDistributors.map(d => d.name + " <span class='text-[8px] text-slate-400'>(ID: " + d.id + ")</span>").join(', ') + "</div>";
-            }
+            const clientsHTML = agentCustomers.map(c => 
+                "<div class='flex justify-between items-center bg-purple-50/40 border p-1 rounded my-1 font-semibold text-purple-700'>" +
+                "<span>• " + c.name + " <span class='text-[8px] text-slate-400'>(ID: "+c.id+")</span></span>" +
+                injectActionControls('customers', c) + 
+                "</div>" + injectMetadataBadges(c)
+            ).join('') || "<div class='text-slate-400 italic text-[10px]'>No direct accounts assigned</div>";
 
-            // Recursively evaluate any sub-agents down the chain
+            let html = "<div class='pl-2.5 py-2 border-l-2 border-emerald-500 bg-emerald-50/20 p-2.5 rounded-lg my-2 shadow-3xs text-[11px]'>";
+            html += "<div class='flex justify-between items-start'><div class='text-emerald-700 font-bold'>💼 Agent: " + a.name + " <span class='text-[9px] text-slate-400 font-normal font-mono'>(ID: " + a.id + ")</span></div>" + injectActionControls('agents', a) + "</div>";
+            html += injectMetadataBadges(a);
+            
+            html += "<div class='pl-3 mt-2 space-y-2'>";
+            html += "<div class='bg-purple-50/20 p-2 rounded border border-purple-100/60'><span class='block font-bold text-purple-700 text-[9px] uppercase mb-1'>👥 Portfolio Clients</span>" + clientsHTML + "</div>";
+            
+            if (agentDistributors.length > 0) html += "<div class='text-blue-700 font-medium text-[10px]'>📦 Channel Links: " + agentDistributors.map(d => d.name + " <span class='text-[8px] text-slate-400'>(ID: "+d.id+")</span>").join(', ') + "</div>";
+            
             if (subAgents.length > 0) {
                 html += "<div class='mt-1.5 pt-1 border-t border-dashed border-emerald-200'>";
-                html += "<span class='block text-[8px] uppercase font-bold text-slate-400 tracking-wider mb-1'>↳ Sub-Agents Hierarchy:</span>";
-                html += subAgents.map(sa => {
-                    const fullSA = (region.agents || []).find(x => x.id === sa.id) || sa;
-                    return buildAgentHTML(fullSA, region);
-                }).join('');
+                html += subAgents.map(sa => buildAgentHTML(sa, region)).join('');
                 html += "</div>";
             }
-
             html += "</div></div>";
             return html;
         }
 
         function buildDistributorHTML(d, region) {
-            const subDistributors = (region.distributors || []).filter(sd => sd.parentDistributorId === d.id);
+            const subDistributors = globalPool.distributors.filter(sd => sd.parentDistributorId === d.id);
+            const agentsHTML = (d.agents || []).map(a => globalPool.agents.find(x => x.id === a.id) || a).filter(a => !a.parentAgentId).map(a => buildAgentHTML(a, region)).join('') || "<div class='text-slate-400 italic text-[10px]'>None linked</div>";
+            const clientsHTML = globalPool.customers.filter(c => c.distributorId === d.id && !c.agentId).map(c => "<div class='flex justify-between items-center bg-purple-50/40 border p-1 rounded my-1 font-semibold text-purple-700'><span>• " + c.name + " <span class='text-[8px] text-slate-400'>(ID: "+c.id+")</span></span>"+injectActionControls('customers', c)+"</div>" + injectMetadataBadges(c)).join('') || "<div class='text-slate-400 italic text-[10px]'>No direct accounts assigned</div>";
             
-            // Map full objects to capture customers and distributors properties
-            const agentsHTML = (d.agents || []).map(a => {
-                const fullA = (region.agents || []).find(x => x.id === a.id) || a;
-                return buildAgentHTML(fullA, region);
-            }).join('') || "<div class='text-slate-400 italic text-[10px]'>No channel agents assigned</div>";
-            
-            const clientsHTML = (d.customers || []).map(c => "<div>• " + c.name + " <span class='text-[9px] text-slate-400'>(ID: " + c.id + ")</span></div>").join('') || "<div class='text-slate-400 italic text-[10px]'>No clients assigned</div>";
-            
-            let html = "<details class='bg-white border rounded-lg overflow-hidden shadow-3xs mb-1.5' open>";
-            html += "<summary class='text-xs font-semibold text-slate-700 bg-slate-50 p-2 cursor-pointer select-none'>📦 Master Dist: " + d.name + " <span class='text-[9px] text-slate-400 font-mono font-normal'>(ID: " + d.id + ")</span></summary>";
-            html += "<div class='p-2.5 space-y-2 bg-white text-[11px] pl-4'>";
+            let html = "<details class='bg-white border rounded-lg overflow-hidden shadow-3xs mb-2' open>";
+            html += "<summary class='text-xs font-semibold text-slate-700 bg-slate-50 p-2 cursor-pointer select-none flex justify-between items-center'><span>📦 Master Dist: " + d.name + " <span class='text-[9px] text-slate-400 font-mono font-normal'>(ID: " + d.id + ")</span></span>"+injectActionControls('distributors', d)+"</summary>";
+            html += "<div class='p-2.5 space-y-2 bg-white text-[11px] pl-4'>" + injectMetadataBadges(d);
             html += "<div class='grid grid-cols-1 md:grid-cols-2 gap-2'>";
-            html += "<div class='bg-emerald-50/40 p-2 rounded border border-emerald-100'><span class='block font-bold text-emerald-700 text-[9px] uppercase mb-1'>💼 Mapped Agents</span>" + agentsHTML + "</div>";
-            html += "<div class='bg-purple-50/40 p-2 rounded border border-purple-100'><span class='block font-bold text-purple-700 text-[9px] uppercase mb-1'>👥 Portfolio Clients</span>" + clientsHTML + "</div>";
+            html += "<div class='bg-emerald-50/40 p-2 rounded border border-emerald-100'><span class='block font-bold text-emerald-700 text-[9px] uppercase mb-1'>💼 Mapped Channels</span>" + agentsHTML + "</div>";
+            html += "<div class='bg-purple-50/40 p-2 rounded border border-purple-100'><span class='block font-bold text-purple-700 text-[9px] uppercase mb-1'>👥 Portfolio Pipelines</span>" + clientsHTML + "</div>";
             html += "</div>";
-            
             if (subDistributors.length > 0) {
                 html += "<div class='pt-2 border-t border-dashed'><span class='block text-[9px] uppercase font-bold text-blue-500 mb-1'>↳ Connected Sub-Distributors</span>";
-                html += subDistributors.map(sd => "<div class='bg-blue-50/50 text-slate-700 p-1 rounded border border-blue-100/60 font-medium'>📦 Sub-Distributor: " + sd.name + " <span class='text-[9px] font-mono text-slate-400'>(ID: " + sd.id + ")</span></div>").join('');
+                html += subDistributors.map(sd => "<div class='bg-blue-50/50 text-slate-700 p-1.5 rounded border border-blue-100/60 font-medium mb-1 flex justify-between items-center'><span>📦 Sub-Distributor: " + sd.name + " <span class='text-[9px] text-slate-400'>(ID: " + sd.id + ")</span></span>"+injectActionControls('distributors', sd)+"</div>" + injectMetadataBadges(sd)).join('');
                 html += "</div>";
             }
             html += "</div></details>";
@@ -273,9 +452,30 @@
         async function renderTree() {
             const container = document.getElementById('tree-container');
             try {
-                const res = await fetch('/network');
+                const res = await fetch('/network', { headers: { 'x-user-email': session.email } });
+                
+                if (!res.ok) {
+                    const errorPayload = await res.json().catch(() => ({ error: "Raw non-JSON systemic server disconnect." }));
+                    container.innerHTML = `
+                        <div class="bg-red-50 border border-red-200 p-4 rounded-xl text-xs space-y-1 text-red-700">
+                            <p class="font-bold uppercase tracking-wider text-red-800">⚠️ Backend Handshake Rejected (${res.status})</p>
+                            <p class="font-mono bg-white/60 p-2 rounded border border-red-100 mt-1">${errorPayload.error || 'No context message found.'}</p>
+                        </div>`;
+                    return;
+                }
+
                 const data = await res.json();
-                if (data.length === 0) { container.innerHTML = '<p class="text-xs text-slate-400 italic">No operational assets present.</p>'; return; }
+                if (!Array.isArray(data) || data.length === 0) { 
+                    container.innerHTML = '<p class="text-xs text-slate-400 italic">No operational assets match profile visibility scopes.</p>'; 
+                    return; 
+                }
+
+                globalPool = { regions: data, distributors: [], agents: [], customers: [] };
+                data.forEach(region => {
+                    if (region.agents) globalPool.agents.push(...region.agents);
+                    if (region.customers) globalPool.customers.push(...region.customers);
+                    if (region.distributors) globalPool.distributors.push(...region.distributors);
+                });
 
                 container.innerHTML = data.map(region => {
                     const directCustomers = (region.customers || []).filter(c => !c.distributorId && !c.agentId);
@@ -284,24 +484,137 @@
 
                     let directBoxHTML = "";
                     if (directCustomers.length > 0 || independentAgents.length > 0) {
-                        directBoxHTML += "<div class='bg-slate-50 border p-2.5 rounded-lg flex flex-col gap-2 text-xs shadow-3xs'><span class='font-bold text-slate-400 uppercase text-[9px]'>Independent Region Infrastructure Layer:</span>";
+                        directBoxHTML += "<div class='bg-slate-50 border p-2.5 rounded-lg flex flex-col gap-2 text-xs shadow-3xs'><span class='font-bold text-slate-400 uppercase text-[9px]'>Independent Layer:</span>";
                         directBoxHTML += independentAgents.map(a => buildAgentHTML(a, region)).join('');
-                        directBoxHTML += directCustomers.map(c => "<div class='bg-white p-2 rounded shadow-3xs text-purple-600 font-bold'>👥 House Account: " + c.name + " <span class='text-[9px] text-slate-400 font-normal'>(ID: " + c.id + ")</span></div>").join('');
+                        directBoxHTML += directCustomers.map(c => "<div class='bg-white p-2 rounded shadow-3xs text-purple-600 font-bold flex justify-between items-center'><span>👥 House Account: " + c.name + " <span class='text-[9px] text-slate-400 font-normal'>(ID: " + c.id + ")</span></span>"+injectActionControls('customers', c)+"</div>" + injectMetadataBadges(c)).join('');
                         directBoxHTML += "</div>";
                     }
 
                     const channelsHTML = masterDistributors.map(d => buildDistributorHTML(d, region)).join('') || '<p class="text-[10px] text-slate-400 italic">No distribution tracks active.</p>';
 
-                    let regionHTML = "<details class='bg-white border rounded-xl overflow-hidden shadow-2xs mb-3' open>";
-                    regionHTML += "<summary class='font-bold cursor-pointer text-slate-800 p-4 bg-slate-100/80 rounded-t-xl hover:bg-slate-100 flex justify-between select-none text-xs'><span>🌍 Territory: " + region.name.toUpperCase() + " <span class='text-[10px] text-slate-400'>(Region ID: " + region.id + ")</span></span></summary>";
-                    regionHTML += "<div class='p-3 pl-6 space-y-3'>" + directBoxHTML;
-                    regionHTML += "<div class='border-l-2 pl-3 space-y-2'><h3 class='text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1'>Downstream Channels</h3>" + channelsHTML + "</div>";
+                    let regionHTML = "<details class='bg-white border rounded-xl overflow-hidden shadow-2xs mb-4' open>";
+                    regionHTML += "<summary class='font-bold cursor-pointer text-slate-800 p-4 bg-slate-100/80 rounded-t-xl flex justify-between select-none text-xs'><span>🌍 Territory: " + region.name.toUpperCase() + " <span class='text-[10px] text-slate-400'>(Region ID: " + region.id + ")</span></span>"+injectActionControls('regions', region)+"</summary>";
+                    regionHTML += "<div class='p-3 pl-6 space-y-3'>" + injectMetadataBadges(region) + directBoxHTML;
+                    regionHTML += "<div class='border-l-2 pl-3 space-y-2'><h3 class='text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1'>Downstream Matrix</h3>" + channelsHTML + "</div>";
                     regionHTML += "</div></details>";
                     return regionHTML;
                 }).join('');
             } catch (err) { 
-                container.innerHTML = '<p class="text-red-500 text-xs">Handshake link parsing disconnect.</p>'; 
+                container.innerHTML = '<p class="text-red-500 text-xs">Access visibility tracking error: ' + err.message + '</p>'; 
             }
+        }
+
+        // ==========================================
+        // DEEP-NESTED HIERARCHICAL SHEET COMPILER ENGINE
+        // ==========================================
+        function executeSpreadsheetExtraction() {
+            const scope = document.getElementById('pdfReportScope').value;
+            let csvRows = [];
+            
+            csvRows.push(["CARBON3 GLOBAL REAL-TIME OPERATIONAL HIERARCHY AUDIT LOG"]);
+            csvRows.push([`Compilation Timestamp: ${new Date().toLocaleString()}`]);
+            csvRows.push([]);
+            
+            // Core Data Grid Layout Columns Matrix
+            csvRows.push(["Hierarchy Track Level", "Database ID", "Entity Profile Name", "Linked Context Mapping", "Direct Contact Details", "Active Orders ($)", "Estimated Orders ($)", "Product Tested", "POC Evaluation Status", "Internal Strategy Notes & Logs"]);
+
+            const clean = (val) => {
+                if (val === null || val === undefined) return '""';
+                return `"${String(val).replace(/"/g, '""').trim()}"`;
+            };
+
+            // Recursion Handler 1: Client Portfolio Data Grid Injection
+            const appendCustomerRow = (c, hierarchicalLevel, linkageContext) => {
+                csvRows.push([hierarchicalLevel, c.id, c.name, linkageContext, c.contactDetails || "None", c.orders || "0", c.estimatedOrders || "0", c.productTested ? "COMPLETE" : "PENDING", c.pocStatus || "NONE", (c.notes || "") + (c.pocResults ? ` [POC Log: ${c.pocResults}]` : "")]);
+            };
+
+            // Recursion Handler 2: Agent Layer Tree Processing Loop
+            const appendAgentTree = (a, hierarchicalLevel, linkageContext) => {
+                csvRows.push([hierarchicalLevel, a.id, a.name, linkageContext, a.contactDetails || "None", a.orders || "0", a.estimatedOrders || "0", a.productTested ? "COMPLETE" : "PENDING", a.pocStatus || "NONE", (a.notes || "") + (a.pocResults ? ` [POC Log: ${a.pocResults}]` : "")]);
+                
+                // Nest attached accounts beneath this specific Agent
+                const subPortfolio = globalPool.customers.filter(c => c.agentId === a.id);
+                subPortfolio.forEach(c => appendCustomerRow(c, hierarchicalLevel + " > CUSTOMER", `Agent Matrix link [ID: ${a.id}]`));
+
+                // Process child-sub-agents recursively
+                const directSubAgents = globalPool.agents.filter(sa => sa.parentAgentId === a.id);
+                directSubAgents.forEach(sa => appendAgentTree(sa, hierarchicalLevel + " > SUB-AGENT", `Parent Agent supervisor [ID: ${a.id}]`));
+            };
+
+            // Recursion Handler 3: Distributor Pipeline Grid Generation Loop
+            const appendDistributorTree = (d, hierarchicalLevel, linkageContext) => {
+                csvRows.push([hierarchicalLevel, d.id, d.name, linkageContext, d.contactDetails || "None", d.orders || "0", d.estimatedOrders || "0", d.productTested ? "COMPLETE" : "PENDING", d.pocStatus || "NONE", (d.notes || "") + (d.pocResults ? ` [POC Log: ${d.pocResults}]` : "")]);
+
+                // Pull immediate distributor accounts (not assigned out to field agents)
+                const primaryDistClients = globalPool.customers.filter(c => c.distributorId === d.id && !c.agentId);
+                primaryDistClients.forEach(c => appendCustomerRow(c, hierarchicalLevel + " > CUSTOMER", `Direct Channel Account [ID: ${d.id}]`));
+
+                // Pull agents mapped into this specific distribution framework node
+                const mappedDistAgents = globalPool.agents.filter(a => (d.agents || []).some(da => da.id === a.id) && !a.parentAgentId);
+                mappedDistAgents.forEach(a => appendAgentTree(a, hierarchicalLevel + " > LINKED AGENT", `Distribution Node link [ID: ${d.id}]`));
+
+                // Process down-network sub-distributors recursively
+                const downNetworkDists = globalPool.distributors.filter(sd => sd.parentDistributorId === d.id);
+                downNetworkDists.forEach(sd => appendDistributorTree(sd, hierarchicalLevel + " > SUB-DISTRIBUTOR", `Parent Master Distributor [ID: ${d.id}]`));
+            };
+
+            // GLOBAL HIGH-LEVEL AUDIT DISPATCH COMPILER
+            if (scope === 'all') {
+                globalPool.regions.forEach(r => {
+                    csvRows.push(["===================================================================================================="]);
+                    csvRows.push(["REGION MASTER LAYER", r.id, r.name.toUpperCase(), "Root Corporate Territory", r.contactDetails || "None", r.orders || "0", r.estimatedOrders || "0", r.productTested ? "COMPLETE" : "PENDING", r.pocStatus || "NONE", r.notes || ""]);
+                    csvRows.push(["===================================================================================================="]);
+
+                    // Block Section A: House Accounts (Direct Customers of the Territory)
+                    const rootHouseAccounts = globalPool.customers.filter(c => c.regionId === r.id && !c.distributorId && !c.agentId);
+                    if (rootHouseAccounts.length > 0) {
+                        csvRows.push(["  ↳ SECTION: UNASSIGNED INDEPENDENT HOUSE ACCOUNTS PORTFOLIO"]);
+                        rootHouseAccounts.forEach(c => appendCustomerRow(c, "    House Account Portfolio", `Regional Master Loop [ID: ${r.id}]`));
+                    }
+
+                    // Block Section B: Independent Account Field Agents
+                    const regionIndependentAgents = globalPool.agents.filter(a => a.regionId === r.id && !a.parentAgentId && (!a.distributors || a.distributors.length === 0));
+                    if (regionIndependentAgents.length > 0) {
+                        csvRows.push(["  ↳ SECTION: INDEPENDENT FIELD AGENTS NETWORK"]);
+                        regionIndependentAgents.forEach(a => appendAgentTree(a, "    Independent Field Agent", `Regional Master Loop [ID: ${r.id}]`));
+                    }
+
+                    // Block Section C: Structured Distribution Master Chains
+                    const regionMasterDistributors = globalPool.distributors.filter(d => d.regionId === r.id && !d.parentDistributorId);
+                    if (regionMasterDistributors.length > 0) {
+                        csvRows.push(["  ↳ SECTION: PRIMARY DISTRIBUTION CHANNELS & MASTER STATIONS NETWORK"]);
+                        regionMasterDistributors.forEach(d => appendDistributorTree(d, "    Master Distributor Frame", `Regional Master Loop [ID: ${r.id}]`));
+                    }
+                    csvRows.push([]); // Print Spacer Row between individual region matrix systems
+                });
+            } else {
+                // FALLBACK ISOLATION FILTER TRACKERS: Allows targeted flat matrix extraction if user alters selector dropdown
+                if (scope === 'regions') {
+                    csvRows.push(["--- SELECTIVE EXPORT: REGISTERED REGIONS SUBSET DATA ---"]);
+                    globalPool.regions.forEach(r => csvRows.push(["Region", r.id, r.name, "Root", r.contactDetails, r.orders, r.estimatedOrders, r.productTested, r.pocStatus, r.notes]));
+                } else if (scope === 'distributors') {
+                    csvRows.push(["--- SELECTIVE EXPORT: DISTRIBUTION TRACK CHANNELS SUBSET DATA ---"]);
+                    globalPool.distributors.forEach(d => csvRows.push(["Distributor Node", d.id, d.name, `Region ID Match: ${d.regionId}`, d.contactDetails, d.orders, d.estimatedOrders, d.productTested, d.pocStatus, d.notes]));
+                } else if (scope === 'agents') {
+                    csvRows.push(["--- SELECTIVE EXPORT: ACCOUNT AGENTS SUBSET DATA ---"]);
+                    globalPool.agents.forEach(a => csvRows.push(["Field Agent", a.id, a.name, `Region ID Match: ${a.regionId}`, a.contactDetails, a.orders, a.estimatedOrders, a.productTested, a.pocStatus, a.notes]));
+                } else if (scope === 'customers') {
+                    csvRows.push(["--- SELECTIVE EXPORT: MONITORED PORTFOLIO CUSTOMERS SUBSET DATA ---"]);
+                    globalPool.customers.forEach(c => csvRows.push(["Customer Account", c.id, c.name, `Region ID Match: ${c.regionId}`, c.contactDetails, c.orders, c.estimatedOrders, c.productTested, c.pocStatus, c.notes]));
+                }
+            }
+
+            // Stream CSV Data matrix payload out into the browser file handoff stream
+            const csvSerializedContent = csvRows.map(row => row.map(clean).join(",")).join("\n");
+            const structuralBlobStream = new Blob(["\uFEFF" + csvSerializedContent], { type: 'text/csv;charset=utf-8;' });
+            const temporaryAnchorLink = document.createElement("a");
+            
+            temporaryAnchorLink.href = URL.createObjectURL(structuralBlobStream);
+            temporaryAnchorLink.setAttribute("download", `carbon3_hierarchical_${scope}_audit_log.csv`);
+            document.body.appendChild(temporaryAnchorLink);
+            
+            temporaryAnchorLink.click();
+            document.body.removeChild(temporaryAnchorLink);
         }
     </script>
 </body>

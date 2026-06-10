@@ -7,56 +7,85 @@ generator client {
 }
 
 model Region {
-  id           Int           @id @default(autoincrement())
-  name         String        @unique
-  distributors Distributor[]
-  agents       Agent[]
-  customers    Customer[]
+  id              Int           @id @default(autoincrement())
+  name            String        @unique
+  notes           String?
+  contactDetails  String?
+  orders          String?
+  estimatedOrders String?
+  productTested   Boolean       @default(false)
+  pocStatus       String        @default("NONE") // "NONE", "ACTIVE", "SUCCESS", "FAILURE"
+  pocResults      String?
+  distributors    Distributor[]
+  agents          Agent[]
+  customers       Customer[]
 }
 
 model Distributor {
   id                  Int           @id @default(autoincrement())
   name                String
+  notes               String?
+  contactDetails      String?
+  orders              String?
+  estimatedOrders     String?
+  productTested       Boolean       @default(false)
+  pocStatus           String        @default("NONE")
+  pocResults          String?
   regionId            Int
-  region              Region        @relation(fields: [regionId], references: [id])
-  agents              Agent[]       @relation("AgentToDistributor")
+  region              Region        @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  agents              Agent[]       @relation("DistributorToAgent")
   customers           Customer[]
 
-  // Self-referential loop for Sub-Distributors
   parentDistributorId Int?
-  parentDistributor   Distributor?  @relation("DistributorToSubDistributor", fields: [parentDistributorId], references: [id])
+  parentDistributor   Distributor?  @relation("DistributorToSubDistributor", fields: [parentDistributorId], references: [id], onDelete: Cascade)
   subDistributors     Distributor[] @relation("DistributorToSubDistributor")
 }
 
 model Agent {
-  id            Int           @id @default(autoincrement())
-  name          String
-  regionId      Int
-  region        Region        @relation(fields: [regionId], references: [id])
-  distributors  Distributor[] @relation("AgentToDistributor")
-  customers     Customer[]
+  id              Int           @id @default(autoincrement())
+  name            String
+  notes           String?
+  contactDetails  String?
+  orders          String?
+  estimatedOrders String?
+  productTested   Boolean       @default(false)
+  pocStatus       String        @default("NONE")
+  pocResults      String?
+  regionId        Int
+  region              Region        @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  distributors    Distributor[] @relation("DistributorToAgent")
+  customers       Customer[]
 
-  // Self-referential loop for Sub-Agents
-  parentAgentId Int?
-  parentAgent   Agent?        @relation("AgentToSubAgent", fields: [parentAgentId], references: [id])
-  subAgents     Agent[]       @relation("AgentToSubAgent")
+  parentAgentId   Int?
+  parentAgent     Agent?        @relation("AgentToSubAgent", fields: [parentAgentId], references: [id], onDelete: Cascade)
+  subAgents       Agent[]       @relation("AgentToSubAgent")
 }
 
 model Customer {
-  id            Int          @id @default(autoincrement())
-  name          String
-  regionId      Int
-  region        Region       @relation(fields: [regionId], references: [id])
-  distributorId Int?
-  distributor   Distributor? @relation(fields: [distributorId], references: [id])
-  agentId       Int?
-  agent         Agent?       @relation(fields: [agentId], references: [id])
+  id              Int          @id @default(autoincrement())
+  name            String
+  notes           String?
+  contactDetails  String?
+  orders          String?
+  estimatedOrders String?
+  productTested   Boolean      @default(false)
+  pocStatus       String       @default("NONE")
+  pocResults      String?
+  regionId        Int
+  region          Region       @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  distributorId   Int?
+  distributor     Distributor? @relation(fields: [distributorId], references: [id], onDelete: Cascade)
+  agentId         Int?
+  agent           Agent?       @relation(fields: [agentId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  name     String
-  password String
-  role     String
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  name      String
+  password  String
+  role      String
+  canEdit   Boolean @default(false)
+  scopeType String  @default("FULL") 
+  scopeId   Int?
 }

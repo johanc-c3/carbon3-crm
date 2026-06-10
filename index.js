@@ -1,183 +1,288 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client'); 
 const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
-const crypto = require('crypto'); // Native secure hashing
+const crypto = require('crypto');
 
 const app = express();
-
 const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' });
 const prisma = new PrismaClient({ adapter });
 
 app.use(express.json());
 app.use(express.static('public'));
 
-// Helper function to securely hash passwords without external libraries
 function hashPassword(password) {
     return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-// ==========================================
-// 1. GOVERNED AUTHENTICATION ENDPOINTS
-// ==========================================
+// Middleware: Authenticates User Identity & Enforces Row-Level Data Visibility
+async function enforceSecurityScoping(req, res, next) {
+    const userEmail = req.headers['x-user-email'];
+    if (!userEmail) return res.status(401).json({ error: "Authentication required." });
+    
+    const user = await prisma.user.findUnique({ where: { email: userEmail.toLowerCase().trim() } });
+    if (!user) return res.status(403).json({ error: "Profile session missing." });
+    
+    req.currentUser = user;
+    next();
+}
 
-// Initial admin/user registration point
+// Middleware: Validates Mutation Rights (Read/Write Constraints)
+function verifyWritePermission(req, res, next) {
+    if (req.currentUser.role === 'ADMIN') return next();
+    
+    if (!req.currentUser.canEdit) {
+        return res.status(403).json({ error: "Access Denied: Your profile is restricted to View-Only mode." });
+    }
+    next();
+}
+
+// ==========================================
+// 1. SECURED AUTH SYSTEM & IDENTITY GOVERNANCE
+// ==========================================
 app.post('/auth/register', async (req, res) => {
-    const { email, name, password, role } = req.body;
+    const { email, name, password, role, canEdit, scopeType, scopeId } = req.body;
     try {
-        const allowedRoles = ["ADMIN", "MANAGER", "STAFF"];
-        const targetRole = allowedRoles.includes(role?.toUpperCase()) ? role.toUpperCase() : "STAFF";
+        const userCount = await prisma.user.count();
+        
+        // SECURITY BOUNDARY: If users exist, verify requester is an authenticated ADMIN
+        if (userCount > 0) {
+            const requesterEmail = req.headers['x-user-email'];
+            if (!requesterEmail) {
+                return res.status(401).json({ error: "Authentication signatures required to provision corporate accounts." });
+            }
+            
+            const requester = await prisma.user.findUnique({ where: { email: requesterEmail.toLowerCase().trim() } });
+            if (!requester || requester.role !== 'ADMIN') {
+                return res.status(403).json({ error: "Access Denied: Only System Administrators can access account provisioning tools." });
+            }
+        }
+
+        // Governance Guard: If database is empty, force the first registration to be an ADMIN
+        const designatedRole = userCount === 0 ? 'ADMIN' : (role || 'STAFF');
 
         const user = await prisma.user.create({
             data: {
                 email: email.toLowerCase().trim(),
                 name,
                 password: hashPassword(password),
-                role: targetRole
+                role: designatedRole,
+                canEdit: designatedRole === 'ADMIN' ? true : Boolean(canEdit),
+                scopeType: designatedRole === 'ADMIN' ? "FULL" : (scopeType || "FULL"),
+                scopeId: designatedRole === 'ADMIN' ? null : (scopeId ? parseInt(scopeId) : null)
             }
         });
-        res.status(201).json({ message: "User profile provisioned", user: { id: user.id, email: user.email, role: user.role } });
+        res.status(201).json({ message: "Profile access configured successfully", userId: user.id });
     } catch (error) {
-        res.status(400).json({ error: "Registration failed. Email might already exist." });
+        res.status(400).json({ error: "Email configuration footprint already present inside records or invalid schema context map." });
     }
 });
 
-// User Validation Gate (Login)
 app.post('/auth/login', async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
         if (!user || user.password !== hashPassword(password)) {
-            return res.status(401).json({ error: "Invalid credential parameters." });
+            return res.status(401).json({ error: "Invalid signatures." });
         }
-        // Send profile tokens back to client browser storage
-        res.json({ name: user.name, role: user.role, email: user.email });
-    } catch (error) {
-        res.status(500).json({ error: "Authentication transaction loop broken." });
-    }
+        res.json({ name: user.name, role: user.role, email: user.email, canEdit: user.role === 'ADMIN' ? true : user.canEdit });
+    } catch { res.status(500).json({ error: "Auth loop disconnect." }); }
 });
 
-// Access Token Authentication Middleware
-function checkAccess(requiredRoles) {
-    return (req, res, next) => {
-        const userRole = req.headers['x-user-role'];
-        if (!userRole || !requiredRoles.includes(userRole.toUpperCase())) {
-            return res.status(403).json({ error: "Access Denied: Your assigned corporate tier lacks authorization clearance." });
-        }
-        next();
-    };
-}
 // ==========================================
-// 2. HIERARCHICAL SYSTEM DASHBOARD
+// 2. GRANULAR DEEP NETWORK DATASTREAM SCOPING
 // ==========================================
-app.get('/network', async (req, res) => {
+app.get('/network', enforceSecurityScoping, async (req, res) => {
     try {
-        const network = await prisma.region.findMany({
+        const scope = req.currentUser.scopeType;
+        const targetId = req.currentUser.scopeId;
+
+        let network = await prisma.region.findMany({
             include: {
                 distributors: {
-                    include: { 
-                        subDistributors: true, 
+                    include: {
                         agents: true,
-                        customers: true 
+                        customers: true
                     }
                 },
                 agents: {
-                    include: { 
-                        subAgents: true, 
+                    include: {
                         distributors: true,
-                        customers: true 
+                        customers: true
                     }
                 },
                 customers: true
             }
         });
+
+        if (req.currentUser.role === 'ADMIN') {
+            return res.json(network);
+        }
+
+        if (scope === "REGION") {
+            network = network.filter(r => r.id === targetId);
+        } else if (scope === "DISTRIBUTOR") {
+            network = network.map(r => {
+                const filteredDists = r.distributors.filter(d => d.id === targetId || d.parentDistributorId === targetId);
+                if (filteredDists.length > 0) {
+                    return { ...r, distributors: filteredDists, agents: [], customers: [] };
+                }
+                return null;
+            }).filter(Boolean);
+        } else if (scope === "AGENT") {
+            network = network.map(r => {
+                const filteredAgents = r.agents.filter(a => a.id === targetId || a.parentAgentId === targetId);
+                if (filteredAgents.length > 0) {
+                    return { ...r, agents: filteredAgents, distributors: [], customers: [] };
+                }
+                return null;
+            }).filter(Boolean);
+        }
+
         res.json(network);
     } catch (error) {
-        res.status(500).json({ error: "Hierarchy build failed.", details: error.message });
+        res.status(500).json({ error: "Scoping parsing bottleneck.", details: error.message });
     }
 });
 
 // ==========================================
-// 3. PROVISIONING ENGINE (GOVERNED POSTS)
+// 3. SECURED CRUD CREATION SYSTEM ROUTES
 // ==========================================
-app.post('/regions', checkAccess(['ADMIN']), async (req, res) => {
-    const { name } = req.body;
+app.post('/regions', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
     try {
-        const region = await prisma.region.create({ data: { name: name.trim() } });
-        res.status(201).json(region);
-    } catch (error) { res.status(400).json({ error: "Failed to save region." }); }
+        const r = await prisma.region.create({ data: { name: req.body.name.trim() } });
+        res.status(201).json(r);
+    } catch { res.status(400).json({ error: "Failed to create territory." }); }
 });
 
-app.post('/distributors', checkAccess(['ADMIN', 'MANAGER']), async (req, res) => {
-    const { name, regionId, parentDistributorId } = req.body;
+app.post('/distributors', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
     try {
-        const distributor = await prisma.distributor.create({
-            data: { name, regionId: parseInt(regionId), parentDistributorId: parentDistributorId ? parseInt(parentDistributorId) : null }
+        const d = await prisma.distributor.create({
+            data: { name: req.body.name, regionId: parseInt(req.body.regionId), parentDistributorId: req.body.parentDistributorId ? parseInt(req.body.parentDistributorId) : null }
         });
-        res.status(201).json(distributor);
-    } catch (error) { res.status(400).json({ error: "Failed to create distributor." }); }
+        res.status(201).json(d);
+    } catch { res.status(400).json({ error: "Failed to create distributor node." }); }
 });
 
-app.post('/agents', checkAccess(['ADMIN', 'MANAGER']), async (req, res) => {
-    const { name, regionId, distributorId, parentAgentId } = req.body;
+app.post('/agents', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
     try {
-        const agent = await prisma.agent.create({
-            data: { name, regionId: parseInt(regionId), parentAgentId: parentAgentId ? parseInt(parentAgentId) : null }
-        });
-        if (distributorId) {
-            await prisma.agent.update({ where: { id: agent.id }, data: { distributors: { connect: { id: parseInt(distributorId) } } } });
+        const dataPayload = {
+            name: req.body.name,
+            regionId: parseInt(req.body.regionId),
+            parentAgentId: req.body.parentAgentId ? parseInt(req.body.parentAgentId) : null
+        };
+        if (req.body.distributorId) {
+            dataPayload.distributors = { connect: { id: parseInt(req.body.distributorId) } };
         }
+        const agent = await prisma.agent.create({ data: dataPayload });
         res.status(201).json(agent);
-    } catch (error) { res.status(400).json({ error: "Failed to create agent account." }); }
+    } catch { res.status(400).json({ error: "Failed to create agent." }); }
 });
 
-app.post('/customers', checkAccess(['ADMIN', 'MANAGER']), async (req, res) => {
-    const { name, regionId, distributorId, agentId } = req.body;
+app.post('/customers', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
     try {
-        const customer = await prisma.customer.create({
-            data: { name, regionId: parseInt(regionId), distributorId: distributorId ? parseInt(distributorId) : null, agentId: agentId ? parseInt(agentId) : null }
-        });
-        res.status(201).json(customer);
-    } catch (error) { res.status(400).json({ error: "Failed to onboard customer profile." }); }
+        const c = await prisma.customer.create({ data: { name: req.body.name, regionId: parseInt(req.body.regionId), distributorId: req.body.distributorId ? parseInt(req.body.distributorId) : null, agentId: req.body.agentId ? parseInt(req.body.agentId) : null } });
+        res.status(201).json(c);
+    } catch { res.status(400).json({ error: "Failed to onboard profile." }); }
 });
 
 // ==========================================
-// 4. PIPELINE REASSIGNMENT (GOVERNED PUTS)
+// 4. SECURED ENRICHMENT EDITING DATA INJECTORS
 // ==========================================
-app.put('/distributors/:id/move', checkAccess(['ADMIN']), async (req, res) => {
-    const { regionId, parentDistributorId } = req.body;
-    try {
-        const updated = await prisma.distributor.update({
-            where: { id: parseInt(req.params.id) },
-            data: { regionId: parseInt(regionId), parentDistributorId: parentDistributorId ? parseInt(parentDistributorId) : null }
-        });
-        res.json(updated);
-    } catch (error) { res.status(400).json({ error: "Distributor transfer failed." }); }
+const parseSharedFields = (body) => ({
+    name: body.name,
+    notes: body.notes || null,
+    contactDetails: body.contactDetails || null,
+    orders: body.orders || null,
+    estimatedOrders: body.estimatedOrders || null,
+    productTested: body.productTested === true || body.productTested === 'true',
+    pocStatus: body.pocStatus || "NONE", 
+    pocResults: body.pocResults || null
 });
 
-app.put('/agents/:id/move', checkAccess(['ADMIN']), async (req, res) => {
+app.put('/regions/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const u = await prisma.region.update({ where: { id: parseInt(req.params.id) }, data: parseSharedFields(req.body) });
+    res.json(u);
+});
+
+app.put('/distributors/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const dataPayload = { ...parseSharedFields(req.body) };
+    if (req.body.parentDistributorId !== undefined) dataPayload.parentDistributorId = req.body.parentDistributorId ? parseInt(req.body.parentDistributorId) : null;
+    if (req.body.regionId !== undefined) dataPayload.regionId = parseInt(req.body.regionId);
+
+    const u = await prisma.distributor.update({ where: { id: parseInt(req.params.id) }, data: dataPayload });
+    res.json(u);
+});
+
+app.put('/agents/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const dataPayload = { ...parseSharedFields(req.body) };
+    if (req.body.parentAgentId !== undefined) dataPayload.parentAgentId = req.body.parentAgentId ? parseInt(req.body.parentAgentId) : null;
+    if (req.body.regionId !== undefined) dataPayload.regionId = parseInt(req.body.regionId);
+
+    const u = await prisma.agent.update({ where: { id: parseInt(req.params.id) }, data: dataPayload });
+    res.json(u);
+});
+
+app.put('/customers/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const dataPayload = { ...parseSharedFields(req.body) };
+    if (req.body.distributorId !== undefined) dataPayload.distributorId = req.body.distributorId ? parseInt(req.body.distributorId) : null;
+    if (req.body.agentId !== undefined) dataPayload.agentId = req.body.agentId ? parseInt(req.body.agentId) : null;
+    if (req.body.regionId !== undefined) dataPayload.regionId = parseInt(req.body.regionId);
+
+    const u = await prisma.customer.update({ where: { id: parseInt(req.params.id) }, data: dataPayload });
+    res.json(u);
+});
+
+// ==========================================
+// 5. SECURED CASCADING DELETION DESTROYERS
+// ==========================================
+app.delete('/regions/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    await prisma.region.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ success: true });
+});
+
+app.delete('/distributors/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    await prisma.distributor.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ success: true });
+});
+
+app.delete('/agents/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    await prisma.agent.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ success: true });
+});
+
+app.delete('/customers/:id', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    await prisma.customer.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ success: true });
+});
+
+app.put('/agents/:id/move', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const agentId = parseInt(req.params.id);
     const { regionId, parentAgentId, connectDistId, disconnectDistId } = req.body;
-    try {
-        const updateData = { regionId: parseInt(regionId), parentAgentId: parentAgentId ? parseInt(parentAgentId) : null };
-        if (connectDistId || disconnectDistId) {
-            updateData.distributors = {};
-            if (connectDistId) updateData.distributors.connect = { id: parseInt(connectDistId) };
-            if (disconnectDistId) updateData.distributors.disconnect = { id: parseInt(disconnectDistId) };
-        }
-        const updated = await prisma.agent.update({ where: { id: parseInt(req.params.id) }, data: updateData });
-        res.json(updated);
-    } catch (error) { res.status(400).json({ error: "Agent transfer failed." }); }
+    
+    const updateData = {
+        regionId: parseInt(regionId),
+        parentAgentId: parentAgentId ? parseInt(parentAgentId) : null
+    };
+
+    if (connectDistId) {
+        updateData.distributors = { connect: { id: parseInt(connectDistId) } };
+    } else if (disconnectDistId) {
+        updateData.distributors = { disconnect: { id: parseInt(disconnectDistId) } };
+    }
+
+    const u = await prisma.agent.update({ where: { id: agentId }, data: updateData });
+    res.json(u);
 });
 
-app.put('/customers/:id/move', checkAccess(['ADMIN', 'MANAGER']), async (req, res) => {
-    const { regionId, distributorId, agentId } = req.body;
-    try {
-        const updated = await prisma.customer.update({
-            where: { id: parseInt(req.params.id) },
-            data: { regionId: parseInt(regionId), distributorId: distributorId ? parseInt(distributorId) : null, agentId: agentId ? parseInt(agentId) : null }
-        });
-        res.json(updated);
-    } catch (error) { res.status(400).json({ error: "Customer reassignment failed." }); }
+app.put('/distributors/:id/move', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const u = await prisma.distributor.update({ where: { id: parseInt(req.params.id) }, data: { regionId: parseInt(req.body.regionId), parentDistributorId: req.body.parentDistributorId ? parseInt(req.body.parentDistributorId) : null } });
+    res.json(u);
+});
+
+app.put('/customers/:id/move', enforceSecurityScoping, verifyWritePermission, async (req, res) => {
+    const u = await prisma.customer.update({ where: { id: parseInt(req.body.regionId) ? parseInt(req.body.regionId) : 1 }, data: { regionId: parseInt(req.body.regionId), distributorId: req.body.distributorId ? parseInt(req.body.distributorId) : null, agentId: req.body.agentId ? parseInt(req.body.agentId) : null } });
+    res.json(u);
 });
 
 const PORT = 3000;
-app.listen(PORT, () => console.log(`Carbon3 CRM operational on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Carbon3 CRM secure hub running on http://localhost:${PORT}`));
